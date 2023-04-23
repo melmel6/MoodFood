@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mood_food/food_input_page.dart';
 import 'package:mood_food/calendar_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mood_food/tabs.dart';
 
 
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, 
       title: 'FoodMood',
       theme: ThemeData(
         primarySwatch: Colors.pink,
@@ -83,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FoodInputPage(),
+                    builder: (context) => FoodInputTabs(),
                   ),
                 );
               },

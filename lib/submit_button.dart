@@ -4,6 +4,7 @@ import 'dart:convert';
 
 
 class SubmitButton extends StatefulWidget {
+  final String? mealTime;
   final double weight;
   final String? label;
   final String measure;
@@ -14,6 +15,7 @@ class SubmitButton extends StatefulWidget {
 
   const SubmitButton({
     Key? key,
+    required this.mealTime,
     required this.weight,
     required this.label,
     required this.measure,
@@ -83,6 +85,7 @@ class _SubmitButtonState extends State<SubmitButton> {
           // String formattedDate = '${now.day}-${now.month}-${now.year}';
 
           Map<String, dynamic> nutrientData = {
+            'mealTime': widget.mealTime,
             'date': proxthes.toIso8601String(),
             'label': widget.label,
             'measure': widget.measure,
@@ -95,6 +98,7 @@ class _SubmitButtonState extends State<SubmitButton> {
           nutrientList.add(nutrientDataJson);
 
           Map<String, dynamic> nutrientData2 = {
+            'mealTime': widget.mealTime,
             'date': yesterdayAtThisTime.toIso8601String(),
             'label': widget.label,
             'measure': widget.measure,

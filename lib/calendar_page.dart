@@ -97,7 +97,7 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
               selectedDecoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.pink.withOpacity(0.5), width: 2, ),
+                border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2, ),
                 color: Colors.grey.withOpacity(0.3)
                 // boxShadow: [
                 //   BoxShadow(
