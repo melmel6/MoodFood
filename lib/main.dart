@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mood_food/food_input_page.dart';
+import 'package:mood_food/mood_input_page.dart';
 import 'package:mood_food/calendar_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -100,6 +101,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text('Open Calendar Page'),
+            ),
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                     builder: (context) => const MoodInputPage(),
+                  ),
+                );
+              },
+              child: const Text('Open Mood Input Page'),
             ),
           ],
         ),
