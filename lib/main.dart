@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mood_food/food_input_page.dart';
-import 'package:mood_food/mood_input_page.dart';
 import 'package:mood_food/calendar_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mood_food/tabs.dart';
-
+import 'package:mood_food/tabs_mood.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:mood_food/stats.dart';
 
 
 void main() {
@@ -39,6 +42,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  void _saveFakeDataToLocalStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? fakeDataStorage = prefs.getString('fakeData');
+    if(fakeDataStorage == null){
+      String jsonData = await rootBundle.loadString('assets/fake_data.json');
+      await prefs.setString('fakeData', jsonData);
+
+      print("Loaded fake data");
+
+    }
+    else{
+      print("Fake data already exists in local storage");
+    }
+
+    _getAllEntriesFromLocalStorage();
+  }
+
   Future<Map<String, dynamic>> _getAllEntriesFromLocalStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> allEntries = {};
@@ -47,14 +68,18 @@ class _MyHomePageState extends State<MyHomePage> {
       allEntries[key] = prefs.get(key);
     }
 
-    print(allEntries);
+    // print(allEntries["fakeData"]);
+    print(allEntries["foodInputs"]);
+    print(allEntries["moodInputs"]);
+
     return allEntries;
   }
 
   @override
   void initState() {
     super.initState();
-    _getAllEntriesFromLocalStorage();
+
+    _saveFakeDataToLocalStorage();
   }
 
   void _incrementCounter() {
@@ -106,16 +131,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                     builder: (context) => const MoodInputPage(),
-                  ),
-                );
-              },
-              child: const Text('Open Mood Input Page'),
-            ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MoodInputTabs(),
+                      ),
+                    );
+                  },
+                  child: const Text('Open Mood Input Page'),
+                ),
+            SizedBox(height: 24),
+            ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StatsPage(),
+                      ),
+                    );
+                  },
+                  child: const Text('Stats'),
+                ),
           ],
         ),
       ),

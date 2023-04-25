@@ -22,8 +22,10 @@ class _FoodInputTabsState extends State<FoodInputTabs> with SingleTickerProvider
   List<dynamic> _selectedMeals = [];
 
   void _handleSubmit() async {
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String>? nutrientList = prefs.getStringList('foodInputs') ?? [];
+
 
   for (var meal in _selectedMeals) {
     Map<String, dynamic> nutrientData = {
@@ -65,6 +67,7 @@ class _FoodInputTabsState extends State<FoodInputTabs> with SingleTickerProvider
 
   await prefs.setStringList('foodInputs', nutrientList);
 
+  
   _showSuccessDialog(context);
 }
 
@@ -271,10 +274,14 @@ void _showSuccessDialog(BuildContext context) {
                   ? null // disable next button on first tab if meal time not set
                   : _currentTabIndex == 1 && _selectedMeals.isEmpty
                       ? null // disable next button on second tab if no meal is selected
-                      : _currentTabIndex == 2 ? _handleSubmit : () {
-                          setState(() {
-                            _tabController.animateTo(_currentTabIndex + 1);
-                          });
+                      : _currentTabIndex == 2 && _selectedMeals.isEmpty
+                        ? null // disable submit button if no meal is selected
+                        : _currentTabIndex == 2 
+                          ? _handleSubmit 
+                          : () {
+                            setState(() {
+                              _tabController.animateTo(_currentTabIndex + 1);
+                            });
                         },
               child: Text(_currentTabIndex == 2 ? 'Submit' : 'Next'),
             ),
@@ -284,6 +291,8 @@ void _showSuccessDialog(BuildContext context) {
     );
   }
 }
+
+
 
 Map<String, double> calculateNutrientInfo(double weight, double protein, double fat, double carbs, double energy) {
   double factor = weight / 100.0;
