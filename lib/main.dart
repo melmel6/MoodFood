@@ -4,8 +4,6 @@ import 'package:mood_food/mood_input_page.dart';
 import 'package:mood_food/calendar_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 void main() {
   runApp(const MyApp());
 }
@@ -84,44 +82,62 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FoodInputPage(),
-                  ),
-                );
-              },
-              child: const Text('Open Food Input Page'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
                     builder: (context) => const CalendarPage(),
                   ),
                 );
               },
               child: const Text('Open Calendar Page'),
             ),
-            SizedBox(height: 24),
-            ElevatedButton(
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                     builder: (context) => const MoodInputPage(),
-                  ),
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 150,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FoodInputPage(),
+                                ),
+                              );
+                            },
+                            child: const Text('Food'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MoodInputPage(),
+                                ),
+                              );
+                            },
+                            child: const Text('Mood'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
-              child: const Text('Open Mood Input Page'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const SizedBox.shrink(),
     );
   }
 }
