@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MoodInputPage extends StatefulWidget {
-  const MoodInputPage({Key? key}) : super(key: key);
+  final String? selectedMoodTime;
+
+  final void Function(dynamic) onMoodAdded;
+
+  const MoodInputPage({Key? key, required this.selectedMoodTime, required this.onMoodAdded}) : super(key: key);
 
   @override
   _MoodInputPageState createState() => _MoodInputPageState();
@@ -9,17 +13,12 @@ class MoodInputPage extends StatefulWidget {
 
 class _MoodInputPageState extends State<MoodInputPage> {
   int? _selectedMood;
-  double _sliderValue = 1;
 
   final List<Map<String, dynamic>> _moods = [    {'label': 'Awful', 'emoji': '😞', 'color': Colors.red},    {'label': 'Bad', 'emoji': '🙁', 'color': Colors.orange},    {'label': 'Meh', 'emoji': '😐', 'color': Colors.yellow},    {'label': 'Good', 'emoji': '🙂', 'color': Colors.lightGreen},    {'label': 'Super', 'emoji': '😊', 'color': Colors.green},  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('How are you?'),
-        centerTitle: true,
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -29,14 +28,14 @@ class _MoodInputPageState extends State<MoodInputPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Choose a mood:',
+                    'How are you feeling?',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 25.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: _moods.map(
@@ -47,25 +46,46 @@ class _MoodInputPageState extends State<MoodInputPage> {
                             setState(() {
                               _selectedMood = _moods.indexOf(mood);
                             });
+                            widget.onMoodAdded(_selectedMood);
                           },
-                          child: Column(
-                            children: [
-                              Text(
-                                mood['emoji'] as String,
-                                style: TextStyle(
-                                  fontSize: isSelected ? 56.0 : 48.0,
-                                  color: isSelected ? Colors.grey : mood['color'] as Color,
+                          child: Transform.scale(
+                            scale: isSelected ? 1.2 : 1.0,
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(isSelected ? 8.0 : 0.0),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? Colors.white : null,
+                                    borderRadius: BorderRadius.circular(isSelected ? 50.0 : 0.0),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0, 3),
+                                            ),
+                                          ]
+                                        : [],
+                                  ),
+                                  child: Text(
+                                    mood['emoji'] as String,
+                                    style: TextStyle(
+                                      fontSize: isSelected ? 56.0 : 48.0,
+                                      color: mood['color'] as Color,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                mood['label'] as String,
-                                style: TextStyle(
-                                  fontSize: isSelected ? 18.0 : 16.0,
-                                  color: isSelected ? Colors.grey : mood['color'] as Color,
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  mood['label'] as String,
+                                  style: TextStyle(
+                                    fontSize: isSelected ? 18.0 : 16.0,
+                                    color: mood['color'] as Color,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -75,30 +95,10 @@ class _MoodInputPageState extends State<MoodInputPage> {
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 100.0,
-            color: _selectedMood != null ? Colors.green : Colors.grey.shade300,
-            child: Center(
-              child: _selectedMood != null
-                  ? IconButton(
-                      onPressed: () {
-                        // navigate back to the main screen
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 32.0,
-                      ),
-                      color: Colors.white,
-                      iconSize: 48.0,
-                    )
-                  : SizedBox(),
-            ),
-          ),
         ],
       ),
     );
   }
 }
+
+

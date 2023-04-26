@@ -3,10 +3,11 @@ import 'package:mood_food/api_handler.dart';
 import 'package:mood_food/nutrient_info_box.dart';
 import 'package:mood_food/submit_button.dart';
 
-
-
 class FoodInputPage extends StatefulWidget {
-  const FoodInputPage({Key? key}) : super(key: key);
+  final String? selectedMealTime;
+  final void Function(dynamic) onMealAdded;
+
+  const FoodInputPage({Key? key, this.selectedMealTime, required this.onMealAdded}) : super(key: key);
 
   @override
   _FoodInputPageState createState() => _FoodInputPageState();
@@ -14,6 +15,9 @@ class FoodInputPage extends StatefulWidget {
 
 class _FoodInputPageState extends State<FoodInputPage> {
   final _apiHandler = ApiHandler();
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _searchController = TextEditingController();
+
 
   
   dynamic _searchResponse;
@@ -25,6 +29,9 @@ class _FoodInputPageState extends State<FoodInputPage> {
   dynamic _selectedFood;
   List<String> _foodLabels = [];
   String? _selectedLabel;
+
+  List<dynamic> _selectedFoods = [];
+
 
   Future<void> _searchFood() async {
     if (_searchQuery.isNotEmpty) {
@@ -46,20 +53,47 @@ class _FoodInputPageState extends State<FoodInputPage> {
     }
   }
 
+  void _addSelectedFood() {
+  if (_selectedFood != null && _selectedMeasure != null) {
+    var meal = {
+        'label': _selectedLabel,
+        'measure': _selectedMeasure['label'],
+        'weight': _selectedMeasure['weight'],
+        'proteinPer100g': _selectedFood['nutrients']['PROCNT'],
+        'fatPer100g': _selectedFood['nutrients']['FAT'],
+        'carbsPer100g': _selectedFood['nutrients']['CHOCDF'],
+        'energyPer100g': _selectedFood['nutrients']['ENERC_KCAL'],
+      };
 
- @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Food Input Page'),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16),
+    setState(() {
+      _selectedFoods.add(meal);
+      _selectedFood = null;
+      _selectedMeasure = null;
+      _measures = [];
+      _foodLabels = [];
+      _searchController.clear();
+    });
+    widget.onMealAdded(meal); // Call the callback function to add the meal
+    // Navigator.pop(context); // Navigate back to the Meal Plan page
+  }
+  
+}
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchBar(
-              hintText: 'Search for food...',
+            TextFormField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search for a food...',
+              ),
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value;
@@ -156,30 +190,25 @@ class _FoodInputPageState extends State<FoodInputPage> {
               
             // ),
 
-            if (_selectedMeasure != null)
-              SubmitButton(
-                weight: _selectedMeasure['weight'],
-                label: _selectedLabel,
-                measure:_selectedMeasure['label'],
-                proteinPer100g: _selectedFood['nutrients']['PROCNT'],
-                fatPer100g: _selectedFood['nutrients']['FAT'],
-                carbsPer100g: _selectedFood['nutrients']['CHOCDF'],
-                energyPer100g: _selectedFood['nutrients']['ENERC_KCAL']
-              ),
+            
+
+            if(_selectedMeasure != null)
+              Container(
+                width: double.infinity,
+                height: 50,
+                margin: EdgeInsets.all(16),
+                child: ElevatedButton(
+                  onPressed: _addSelectedFood,
+                  child: Text('Add'),
+                )
+              )
           ],
-          
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context, _selectedFood);
-        },
-        child: Icon(Icons.arrow_back),
-      ),
-    );
-  }
+    )
+  );
 }
-
+}
 
 class CustomBadge extends StatelessWidget {
   final String label;
