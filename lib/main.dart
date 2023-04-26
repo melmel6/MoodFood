@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:mood_food/stats.dart';
-
+import 'package:mood_food/stats2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false,
       title: 'FoodMood',
       theme: ThemeData(
         primarySwatch: Colors.pink,
@@ -46,14 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? fakeDataStorage = prefs.getString('fakeData');
-    if(fakeDataStorage == null){
+    if (fakeDataStorage == null) {
       String jsonData = await rootBundle.loadString('assets/fake_data.json');
       await prefs.setString('fakeData', jsonData);
 
       print("Loaded fake data");
-
-    }
-    else{
+    } else {
       print("Fake data already exists in local storage");
     }
 
@@ -129,30 +127,42 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Open Calendar Page'),
             ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoodInputTabs(),
+                  ),
+                );
+              },
+              child: const Text('Open Mood Input Page'),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StatsPage(),
+                  ),
+                );
+              },
+              child: const Text('Stats'),
+            ),
             SizedBox(height: 24),
             ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MoodInputTabs(),
-                      ),
-                    );
-                  },
-                  child: const Text('Open Mood Input Page'),
-                ),
-            SizedBox(height: 24),
-            ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => StatsPage(),
-                      ),
-                    );
-                  },
-                  child: const Text('Stats'),
-                ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Stats2Page(),
+                  ),
+                );
+              },
+              child: const Text('Stats2'),
+            ),
           ],
         ),
       ),
