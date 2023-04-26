@@ -109,35 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FoodInputTabs(),
-                  ),
-                );
-              },
-              child: const Text('Open Food Input Page'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CalendarPage(),
+                    builder: (context) => CalendarPage(),
                   ),
                 );
               },
               child: const Text('Open Calendar Page'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MoodInputTabs(),
-                  ),
-                );
-              },
-              child: const Text('Open Mood Input Page'),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
@@ -162,15 +138,57 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text('Stats2'),
+            )
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 150,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FoodInputTabs(),
+                                ),
+                              );
+                            },
+                            child: const Text('Food'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MoodInputTabs(),
+                                ),
+                              );
+                            },
+                            child: const Text('Mood'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const SizedBox.shrink(),
     );
   }
 }
