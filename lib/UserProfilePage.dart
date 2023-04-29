@@ -20,7 +20,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         title: Text(
           'User Profile',
           style:
-              TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+              TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w200),
         ),
         actions: [
           IconButton(
@@ -43,7 +43,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
-                        'https://belikeyou.gr/images/2020/08/31/vlaxaki.png'),
+                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
@@ -70,7 +70,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 18,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 16),
               ListTile(
@@ -92,7 +92,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 18,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 16),
               SwitchListTile(
