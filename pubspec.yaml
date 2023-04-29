@@ -66,6 +66,12 @@ flutter:
 
   assets:
     - assets/fake_data.json
+  fonts:
+  - family: Montserrat
+    fonts:
+      - asset: fonts/Montserrat-Regular.ttf
+      - asset: fonts/Montserrat-Bold.ttf
+        weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:
