@@ -52,13 +52,52 @@ class _StatisticsPageState extends State<StatisticsPage> {
     String? jsonData = prefs.getString('fakeData');
     setState(() {
       _dataFood = json.decode(jsonData ?? '')['foodInputs'] ?? [];
-      _foodDataHour = _calculateAverageFoodPerHour(_dataFood);
+      _foodDataHour = _calculateAverageFoodPerTimeOfDay(_dataFood);
       _foodDataDay = _calculateAverageFoodPerDay(_dataFood);
 
       _dataMood = json.decode(jsonData ?? '')['moodInputs'] ?? [];
-      _moodDataHour = _calculateAverageMoodPerHour(_dataMood);
+      _moodDataHour = _calculateAverageMoodPerTimeOfDay(_dataMood);
       _moodDataDay = _calculateAverageMoodPerDay(_dataMood);
     });
+  }
+
+  void _showInfoPopup(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            child: Text('Close'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitleWithInfoIcon(BuildContext context, String title, String info) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        InkWell(
+          onTap: () => _showInfoPopup(context, title, info),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: EdgeInsets.all(8),
+            child: Icon(
+              Icons.info_outline,
+              color: Color.fromARGB(255, 241, 134, 110),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   List<FoodData> _calculateAverageFoodPerHour(List<dynamic> data) {
@@ -84,6 +123,45 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
     return foodData;
   }
+
+  List<FoodData> _calculateAverageFoodPerTimeOfDay(List<dynamic> data) {
+    List<FoodData> foodData = [];
+    Map<String, List<int>> timeOfDayFoodScores = {
+      'Morning (5:00 - 12:00)': [],
+      'Afternoon (12:00 - 17:00)': [],
+      'Evening (17:00 - 21:00)': [],
+      'Night (21:00 - 5:00)': [],
+    };
+
+    data.forEach((item) {
+      DateTime date = DateTime.parse(item['date']);
+      String timeOfDay;
+
+      if (date.hour >= 5 && date.hour < 12) {
+        timeOfDay = 'Morning (5:00 - 12:00)';
+      } else if (date.hour >= 12 && date.hour < 17) {
+        timeOfDay = 'Afternoon (12:00 - 17:00)';
+      } else if (date.hour >= 17 && date.hour < 21) {
+        timeOfDay = 'Evening (17:00 - 21:00)';
+      } else {
+        timeOfDay = 'Night (21:00 - 5:00)';
+      }
+
+      timeOfDayFoodScores[timeOfDay]?.add(item['nutrientInfo']['energy']);
+    });
+
+    timeOfDayFoodScores.forEach((timeOfDay, foodScores) {
+      double averageFoodScore = 0.0;
+      if (foodScores.isNotEmpty) {
+        averageFoodScore = foodScores.reduce((a, b) => a + b) / foodScores.length;
+      }
+
+      foodData.add(FoodData(timeOfDay, averageFoodScore));
+    });
+
+    return foodData;
+  }
+
 
   List<FoodData> _calculateAverageFoodPerDay(List<dynamic> data) {
     List<FoodData> foodData = [];
@@ -135,6 +213,48 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
     return moodData;
   }
+
+  
+
+  List<MoodData> _calculateAverageMoodPerTimeOfDay(List<dynamic> data) {
+    List<MoodData> moodData = [];
+
+    Map<String, List<int>> timeOfDayMoodScores = {
+      'Morning (5:00 - 12:00)': [],
+      'Afternoon (12:00 - 17:00)': [],
+      'Evening (17:00 - 21:00)': [],
+      'Night (21:00 - 5:00)': [],
+    };
+
+    data.forEach((item) {
+      DateTime date = DateTime.parse(item['date']);
+      String timeOfDay;
+
+      if (date.hour >= 5 && date.hour < 12) {
+        timeOfDay = 'Morning (5:00 - 12:00)';
+      } else if (date.hour >= 12 && date.hour < 17) {
+        timeOfDay = 'Afternoon (12:00 - 17:00)';
+      } else if (date.hour >= 17 && date.hour < 21) {
+        timeOfDay = 'Evening (17:00 - 21:00)';
+      } else {
+        timeOfDay = 'Night (21:00 - 5:00)';
+      }
+
+      timeOfDayMoodScores[timeOfDay]?.add(item['mood']);
+    });
+
+    timeOfDayMoodScores.forEach((timeOfDay, moodScores) {
+      double averageMoodScore = 0.0;
+      if (moodScores.isNotEmpty) {
+        averageMoodScore = moodScores.reduce((a, b) => a + b) / moodScores.length;
+      }
+
+      moodData.add(MoodData(timeOfDay, averageMoodScore));
+    });
+
+    return moodData;
+  }
+
 
   List<MoodData> _calculateAverageMoodPerDay(List<dynamic> data) {
     List<MoodData> moodData = [];
@@ -237,26 +357,53 @@ class _StatisticsPageState extends State<StatisticsPage> {
         measureFn: (MoodData moodData, _) => moodData.moodScore,
         data: _moodDataDay,
         labelAccessorFn: (MoodData moodData, _) =>
-            moodData.moodScore != 0.0 ? '${moodData.moodScore.toStringAsFixed(0)}' : ''
+            moodData.moodScore != 0.0 ? scoreToText(moodData.moodScore) : ''
       ),
     ];
   }
 
-  List<charts.Series<MoodData, String>> _createDataHourMood() {
-    return [
-      charts.Series<MoodData, String>(
-        id: 'Mood',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-          Color.fromARGB(255, 241, 134, 110), // peachy pink color
-        ),
-        domainFn: (MoodData moodData, _) => moodData.hour,
-        measureFn: (MoodData moodData, _) => moodData.moodScore,
-        data: _moodDataHour,
-        labelAccessorFn: (MoodData moodData, _) =>
-            moodData.moodScore != 0.0 ? '${moodData.moodScore.toStringAsFixed(0)}' : ''
-      ),
-    ];
+  // Add this function to convert score to emoji
+  String scoreToEmoji(double score) {
+    if (score < 2) {
+      return '😞';
+    } else if (score < 4) {
+      return '😐';
+    } else {
+      return '😃';
+    }
   }
+
+  String scoreToText(double score) {
+    if (score <= 1) {
+      return 'Awful';
+    }
+    else if (score <= 2) {
+      return 'Bad';
+    } else if (score <= 3) {
+      return 'Meh';
+    } else if (score <= 4) {
+      return 'Happy';
+    } else {
+      return 'Super';
+    }
+  }
+
+List<charts.Series<MoodData, String>> _createDataHourMood() {
+  return [
+    charts.Series<MoodData, String>(
+      id: 'Mood',
+      colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+        Color.fromARGB(255, 241, 134, 110), // peachy pink color
+      ),
+      domainFn: (MoodData moodData, _) => moodData.hour,
+      measureFn: (MoodData moodData, _) => moodData.moodScore,
+      data: _moodDataHour,
+      labelAccessorFn: (MoodData moodData, _) =>
+          moodData.moodScore != 0.0 ? scoreToText(moodData.moodScore) : ''
+    ),
+  ];
+}
+
 
   Widget _buildToggleButton(bool isSelected, String text) {
     return ToggleButtons(
@@ -338,66 +485,87 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Statistics'),
-      ),
-      body: SingleChildScrollView(
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Statistics'),
+    ),
+    backgroundColor: Colors.grey[200], // Add a background color
+    body: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0), // Add padding around the main column
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(top: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  _buildToggleButton(_isDaySelected, 'Day'),
-                ],
-              ),
-            ),
-            SizedBox(height: 50),
-            Center(
-              child: Container(
-                width: 750,
-                height: 400,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: _buildChart(false)
-              ),
-            ),
+            SizedBox(height: 30),
+            _buildTitleWithInfoIcon(context, 'Charts', 'This is some information about the charts.'),
+            // Text('Charts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-            Center(
-              child: Container(
-                width: 750,
-                height: 400,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
+            Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _buildToggleButton(_isDaySelected, 'Day'),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Container(
+                        width: 750,
+                        height: 400,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: _buildChart(false),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Container(
+                        width: 750,
+                        height: 400,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: _buildChart(true),
+                      ),
                     ),
                   ],
                 ),
-                child: _buildChart(true)
+              ),
+            ),
+            SizedBox(height: 30),
+            _buildTitleWithInfoIcon(context, 'Heatmap', 'This is some information about the charts.'),
+            // Text('Image Title', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Image.asset(
+                  '/heatmap.png',
+                  width: 750,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
+    ),
+  );
+}
 }

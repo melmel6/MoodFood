@@ -394,6 +394,7 @@ class _Stats2PageState extends State<Stats2Page> {
                 child: _buildChart(true)
               ),
             ),
+            
           ],
         ),
       ),
