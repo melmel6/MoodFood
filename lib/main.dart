@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:mood_food/stats.dart';
+import 'package:mood_food/heatmap.dart';
 
 
 void main() {
@@ -152,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   },
                   child: const Text('Stats'),
-                ),
+                )
           ],
         ),
       ),
