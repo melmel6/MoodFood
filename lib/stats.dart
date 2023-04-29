@@ -118,7 +118,6 @@ class _StatsPageState extends State<StatsPage> {
   List<charts.Series<MoodData, String>> _createDataDay() {
     // Sort the data by day of the week starting from Monday
     _moodDataDay.sort((a, b) => _getDayOfWeekNumber(a.hour).compareTo(_getDayOfWeekNumber(b.hour)));
-  
 
     return [
       charts.Series<MoodData, String>(
@@ -137,7 +136,9 @@ class _StatsPageState extends State<StatsPage> {
     return [
       charts.Series<MoodData, String>(
         id: 'Mood',
-        colorFn: (_, __) => charts.MaterialPalette.pink.shadeDefault,
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+          Color.fromRGBO(255, 173, 155, 1), // peachy pink color
+        ),
         domainFn: (MoodData moodData, _) => moodData.hour,
         measureFn: (MoodData moodData, _) => moodData.moodScore,
         data: _moodDataHour,
@@ -185,143 +186,71 @@ Widget _buildToggleButton(bool isSelected, String text) {
     );
   }
 
-    Map<DateTime, int> _createHeatMapData() {
-    Map<DateTime, int> heatMapData = {};
-
-    _data.forEach((item) {
-      DateTime date = DateTime.parse(item['date']);
-      date = DateTime(date.year, date.month, date.day);
-      if (heatMapData.containsKey(date)) {
-        heatMapData[date] = heatMapData[date]! + 1;
-      } else {
-        heatMapData[date] = 1;
-      }
-    });
-
-    return heatMapData;
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    // final chartWidget = _isDaySelected
-    //     ? charts.BarChart(
-    //         _createDataDay(),
-    //         animate: true,
-    //         barRendererDecorator: new charts.BarLabelDecorator<String>(),
-    //       )
-    //     : charts.BarChart(
-    //         _createDataHour(),
-    //         animate: true,
-    //         barRendererDecorator: new charts.BarLabelDecorator<String>(),
-    //       );
-        final chartWidget = _isDaySelected
-        ? AspectRatio(
-            aspectRatio: 1.5,
-            child: charts.BarChart(
-              _createDataDay(),
-              animate: true,
-              barRendererDecorator: new charts.BarLabelDecorator<String>(),
-            ),
-          )
-        : AspectRatio(
-            aspectRatio: 1.5,
-            child: charts.BarChart(
-              _createDataHour(),
-              animate: true,
-              barRendererDecorator: new charts.BarLabelDecorator<String>(),
-            ),
-          );
-
-
-      // responsive
-      return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  _buildToggleButton(_isDaySelected, 'Day'),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  chartWidget,
-                  Positioned(
-                    left: 0,
-                    top: -15,
-                    bottom: 0,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SvgPicture.asset('/svg/super.svg', width: 40, height: 40),
-                        SizedBox(height: 100),
-                        SvgPicture.asset('/svg/happy.svg', width: 40, height: 40),
-                        SizedBox(height: 100),
-                        SvgPicture.asset('/svg/meh.svg', width: 40, height: 40),
-                        SizedBox(height: 100),
-                        SvgPicture.asset('/svg/sad.svg', width: 40, height: 40),
-                        SizedBox(height: 100),
-                        SvgPicture.asset('/svg/awful.svg', width: 40, height: 40),
-                        // SizedBox(height: 100),
-                      ],
-                    )
-                  ),
-                ],
-              ),
-            ),
-          ],
+      final chartWidget = _isDaySelected
+      ? AspectRatio(
+          aspectRatio: 1.5,
+          child: charts.BarChart(
+            _createDataDay(),
+            animate: true,
+            barRendererDecorator: new charts.BarLabelDecorator<String>(),
+          ),
+        )
+      : AspectRatio(
+          aspectRatio: 1.5,
+          child: charts.BarChart(
+            _createDataHour(),
+            animate: true,
+            barRendererDecorator: new charts.BarLabelDecorator<String>(),
+          ),
         );
-      },
-    );
 
 
-  //   return Column(
-  //     children: [
-  //       Padding(
-  //         padding: EdgeInsets.only(top: 16.0),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.end,
-  //           children: [
-  //             _buildToggleButton(_isDaySelected, 'Day'),
-  //           ],
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: Stack(
-  //           children: [
-  //             chartWidget,
-  //             Positioned(
-  //               left: 0,
-  //               top: -25,
-  //               bottom: 0,
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                 children: [
-  //                   SvgPicture.asset('/svg/super.svg', width: 40, height: 40),
-  //                   SizedBox(height: 100),
-  //                   SvgPicture.asset('/svg/happy.svg', width: 40, height: 40),
-  //                   SizedBox(height: 100),
-  //                   SvgPicture.asset('/svg/meh.svg', width: 40, height: 40),
-  //                   SizedBox(height: 100),
-  //                   SvgPicture.asset('/svg/sad.svg', width: 40, height: 40),
-  //                   SizedBox(height: 100),
-  //                   SvgPicture.asset('/svg/awful.svg', width: 40, height: 40),
-  //                   // SizedBox(height: 100),
-  //                 ],
-  //               )
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+    // responsive
+    return LayoutBuilder(
+    builder: (BuildContext context, BoxConstraints constraints) {
+      return Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _buildToggleButton(_isDaySelected, 'Day'),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                chartWidget,
+                Positioned(
+                  left: 0,
+                  top: -15,
+                  bottom: 0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SvgPicture.asset('/svg/super.svg', width: 40, height: 40),
+                      SizedBox(height: 100),
+                      SvgPicture.asset('/svg/happy.svg', width: 40, height: 40),
+                      SizedBox(height: 100),
+                      SvgPicture.asset('/svg/meh.svg', width: 40, height: 40),
+                      SizedBox(height: 100),
+                      SvgPicture.asset('/svg/sad.svg', width: 40, height: 40),
+                      SizedBox(height: 100),
+                      SvgPicture.asset('/svg/awful.svg', width: 40, height: 40),
+                    ],
+                  )
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 

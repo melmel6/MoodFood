@@ -8,8 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:mood_food/stats.dart';
-import 'package:mood_food/heatmap.dart';
-
+import 'package:mood_food/stats2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false,
       title: 'FoodMood',
       theme: ThemeData(
         primarySwatch: Colors.pink,
@@ -47,14 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? fakeDataStorage = prefs.getString('fakeData');
-    if(fakeDataStorage == null){
+    if (fakeDataStorage == null) {
       String jsonData = await rootBundle.loadString('assets/fake_data.json');
       await prefs.setString('fakeData', jsonData);
 
       print("Loaded fake data");
-
-    }
-    else{
+    } else {
       print("Fake data already exists in local storage");
     }
 
@@ -112,11 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FoodInputTabs(),
+                    builder: (context) => CalendarPage(),
                   ),
                 );
               },
-              child: const Text('Open Food Input Page'),
+              child: const Text('Open Calendar Page'),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
@@ -124,44 +121,74 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CalendarPage(),
+                    builder: (context) => StatsPage(),
                   ),
                 );
               },
-              child: const Text('Open Calendar Page'),
+              child: const Text('Stats'),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MoodInputTabs(),
-                      ),
-                    );
-                  },
-                  child: const Text('Open Mood Input Page'),
-                ),
-            SizedBox(height: 24),
-            ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => StatsPage(),
-                      ),
-                    );
-                  },
-                  child: const Text('Stats'),
-                )
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Stats2Page(),
+                  ),
+                );
+              },
+              child: const Text('Stats2'),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 150,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FoodInputTabs(),
+                                ),
+                              );
+                            },
+                            child: const Text('Food'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MoodInputTabs(),
+                                ),
+                              );
+                            },
+                            child: const Text('Mood'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
       ),
+      floatingActionButton: const SizedBox.shrink(),
     );
   }
 }
