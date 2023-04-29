@@ -205,7 +205,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
       double averageMoodScoreForHour = 0.0;
       if (moodScoresForHour.isNotEmpty) {
-        averageMoodScoreForHour = moodScoresForHour.reduce((a, b) => a + b) / moodScoresForHour.length;
+        averageMoodScoreForHour = moodScoresForHour.reduce((a, b) => a + b) /
+            moodScoresForHour.length;
       }
 
       moodData.add(MoodData('$i h', averageMoodScoreForHour));
@@ -258,7 +259,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   List<MoodData> _calculateAverageMoodPerDay(List<dynamic> data) {
     List<MoodData> moodData = [];
-    
+
     // Initialize an empty list to keep track of mood scores for each day of the week
 
     List<List<int>> moodScoresForDayOfWeek = List.generate(7, (_) => []);
@@ -269,15 +270,17 @@ class _StatisticsPageState extends State<StatisticsPage> {
       moodScoresForDayOfWeek[dayOfWeek].add(item['mood']);
     });
 
-    
     for (int i = 0; i < 7; i++) {
       double averageMoodScoreForDay = 0.0;
       if (moodScoresForDayOfWeek[i].isNotEmpty) {
-        averageMoodScoreForDay = moodScoresForDayOfWeek[i].reduce((a, b) => a + b) / moodScoresForDayOfWeek[i].length;
+        averageMoodScoreForDay =
+            moodScoresForDayOfWeek[i].reduce((a, b) => a + b) /
+                moodScoresForDayOfWeek[i].length;
       }
-      
+
       // Use the DateFormat package to format the day of the week as a string
-      String dayOfWeekString = DateFormat('EEEE').format(DateTime.now().add(Duration(days: i)));
+      String dayOfWeekString =
+          DateFormat('EEEE').format(DateTime.now().add(Duration(days: i)));
       moodData.add(MoodData(dayOfWeekString, averageMoodScoreForDay));
     }
 
@@ -345,7 +348,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   List<charts.Series<MoodData, String>> _createDataDayMood() {
     // Sort the data by day of the week starting from Monday
-    _moodDataDay.sort((a, b) => _getDayOfWeekNumber(a.hour).compareTo(_getDayOfWeekNumber(b.hour)));
+    _moodDataDay.sort((a, b) =>
+        _getDayOfWeekNumber(a.hour).compareTo(_getDayOfWeekNumber(b.hour)));
 
     return [
       charts.Series<MoodData, String>(
@@ -413,6 +417,8 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
           child: Text(
             'Day',
             style: TextStyle(
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.bold, // Add this
               color: isSelected ? Colors.white : Colors.grey,
             ),
           ),
@@ -422,6 +428,8 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
           child: Text(
             'Hour',
             style: TextStyle(
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.bold, // Add this
               color: isSelected ? Colors.grey : Colors.white,
             ),
           ),
@@ -434,22 +442,78 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
         });
       },
       borderRadius: BorderRadius.circular(30),
-      color:  Color.fromRGBO(255, 173, 155, 1),
-      selectedColor:  Color.fromRGBO(255, 173, 155, 1),
-      fillColor:  Color.fromRGBO(255, 173, 155, 1),
-      selectedBorderColor:  Color.fromRGBO(255, 173, 155, 1),
+      color: Color.fromRGBO(255, 173, 155, 1),
+      selectedColor: Color.fromRGBO(255, 173, 155, 1),
+      fillColor: Color.fromRGBO(255, 173, 155, 1),
+      selectedBorderColor: Color.fromRGBO(255, 173, 155, 1),
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
     );
   }
 
-  Widget _buildChart(isMood){
+  Widget _buildInfoContainer(String title, IconData icon, String count) {
+    return Container(
+      width: 150,
+      height: 120,
+      margin: EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 25,
+            color: Colors.grey[700],
+          ),
+          SizedBox(height: 4),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+              color: Colors.grey[700],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 4),
+          Text(
+            count,
+            style: TextStyle(
+              fontSize: 15,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.bold, // Add this
+              color: Color.fromARGB(255, 255, 117, 75),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChart(isMood) {
     return charts.BarChart(
-      _isDaySelected ? (isMood? _createDataDayMood() : _createDataDayFood()) : (isMood? _createDataHourMood() : _createDataHourFood()),
+      _isDaySelected
+          ? (isMood ? _createDataDayMood() : _createDataDayFood())
+          : (isMood ? _createDataHourMood() : _createDataHourFood()),
       animate: true,
       animationDuration: Duration(milliseconds: 500),
       barRendererDecorator: new charts.BarLabelDecorator<String>(
         insideLabelStyleSpec: charts.TextStyleSpec(
+          fontFamily: 'Montserrat', // Add this
+          fontWeight: 'Bold', // Add this
           color: charts.ColorUtil.fromDartColor(Colors.grey),
           fontSize: 8,
         ),
@@ -460,6 +524,8 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
           labelAnchor: charts.TickLabelAnchor.centered,
           labelJustification: charts.TickLabelJustification.outside,
           labelStyle: charts.TextStyleSpec(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: 'Regular', // Add this
             fontSize: 12,
             color: charts.ColorUtil.fromDartColor(Colors.grey),
           ),
@@ -471,6 +537,8 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
             color: charts.ColorUtil.fromDartColor(Colors.grey),
           ),
           labelStyle: charts.TextStyleSpec(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: 'Regular', // Add this
             fontSize: 12,
             color: charts.ColorUtil.fromDartColor(Colors.grey),
           ),
@@ -489,7 +557,12 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: Text('Statistics'),
+      title: Text('Statistics',
+      style: TextStyle(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal, // Add this
+          )),
+      
     ),
     backgroundColor: Colors.grey[200], // Add a background color
     body: SingleChildScrollView(
@@ -497,6 +570,51 @@ Widget build(BuildContext context) {
         padding: EdgeInsets.all(16.0), // Add padding around the main column
         child: Column(
           children: [
+               Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                      Text(
+                        'Overall',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat', // Add this
+                          fontWeight: FontWeight.bold, // Add this
+                        ),
+                      ),
+                      Text(
+                        'This Week',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat', // Add this
+                          fontWeight: FontWeight.bold, // Add this
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 1.3,
+                    shrinkWrap: true,
+                    children: [
+                      _buildInfoContainer(' Average Kcal input per day:',
+                          Icons.local_dining, '2132'),
+                      _buildInfoContainer('Average Kcal input per day:',
+                          Icons.local_dining, '3011'),
+                      _buildInfoContainer(
+                          'Average mood per day:', Icons.mood, '3.1'),
+                      _buildInfoContainer(
+                          'Average mood per day:', Icons.mood, '1.8'),
+                      _buildInfoContainer(
+                          'Your average emotional score fluctuation:',
+                          Icons.stacked_line_chart,
+                          '12%'),
+                      _buildInfoContainer(
+                          'Average emotional score fluctuation:',
+                          Icons.stacked_line_chart,
+                          '38%'),
+                    ],
+                  ),
             SizedBox(height: 30),
             _buildTitleWithInfoIcon(context, 'Charts', 'This is some information about the charts.'),
             // Text('Charts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -510,6 +628,7 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   children: [
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
