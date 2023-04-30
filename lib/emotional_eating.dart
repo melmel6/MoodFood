@@ -116,18 +116,8 @@ class _EmotionaleatingPageState extends State<EmotionaleatingPage> {
 
 
   List<charts.Series<EmotionalEatingScoreData, DateTime>> _createChartData(List<EmotionalEatingScoreData> data) {
-  return [
-    charts.Series<EmotionalEatingScoreData, DateTime>(
-      id: 'EmotionalEatingScore',
-      colorFn: (_, __) => charts.MaterialPalette.pink.shadeDefault,
-      domainFn: (EmotionalEatingScoreData scoreData, _) => scoreData.date,
-      measureFn: (EmotionalEatingScoreData scoreData, _) => scoreData.score,
-      data: data,
-      strokeWidthPxFn: (_, __) => 4, // Make the line thicker
-    )
-  ];
-}
-
+    return [      charts.Series<EmotionalEatingScoreData, DateTime>(        id: 'EmotionalEatingScore',        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,        domainFn: (EmotionalEatingScoreData scoreData, _) => scoreData.date,        measureFn: (EmotionalEatingScoreData scoreData, _) => scoreData.score,        data: data,      )    ];
+  }
 
   List<EmotionalEatingScoreData> _filterLastMonthData(List<EmotionalEatingScoreData> data) {
     final lastDate = data.last.date;
@@ -136,7 +126,7 @@ class _EmotionaleatingPageState extends State<EmotionaleatingPage> {
   }
 
 
-  Widget _buildToggleButton(bool showWeekly, String text) {
+  Widget _buildToggleButton2(bool showWeekly, String text) {
     return ToggleButtons(
       children: <Widget>[
         Padding(
@@ -174,7 +164,9 @@ class _EmotionaleatingPageState extends State<EmotionaleatingPage> {
     );
   }
 
-  
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -255,8 +247,27 @@ class _EmotionaleatingPageState extends State<EmotionaleatingPage> {
                 ),
               ),
               Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Show Weekly Data'),
+                    Switch(
+                      value: _showWeekly,
+                      onChanged: (value) {
+                        setState(() {
+                          _showWeekly = value;
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: _buildToggleButton(_showWeekly, "Show Weekly Data"),
+                      child: _buildToggleButton2(_showWeekly, "Show Weekly Data"),
                     ),
             ],
           ),
