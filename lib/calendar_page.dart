@@ -26,7 +26,7 @@ class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver
     Map<DateTime, List> events = {};
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jsonDataFood= prefs.getString('foodInputs');
+    String? jsonDataFood = prefs.getString('foodInputs');
 
     List<dynamic> _dataFood = json.decode(jsonDataFood ?? '') ?? [];
 
@@ -85,84 +85,88 @@ class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.all(16),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-              color: Colors.white,
-            ),
-            child: TableCalendar(
-              headerStyle: HeaderStyle(
-                titleCentered: true,
-                formatButtonVisible: false,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.all(16),
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+                color: Colors.white,
               ),
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
-              onFormatChanged: (format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay; // update `_focusedDay` here as well
-                });
-              },
-              availableCalendarFormats: {
-                CalendarFormat.month: '',
-              },
-              selectedDayPredicate: (day) {
-                bool hasEntry = _events.keys.any((key) => isSameDay(key, day));
-                // return isSameDay(_selectedDay, day) || hasEntry;
-                return hasEntry;
-              },
-              eventLoader: (day) {
-                return _events[day] ?? [];
-              },
-              calendarStyle: CalendarStyle(
-                todayDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Color.fromARGB(255, 241, 110, 110), width: 2),
-                    color: Color.fromARGB(255, 241, 110, 110)),
-                selectedDecoration: BoxDecoration(
+              child: TableCalendar(
+                headerStyle: HeaderStyle(
+                  titleCentered: true,
+                  formatButtonVisible: false,
+                ),
+                firstDay: DateTime.utc(2010, 10, 16),
+                lastDay: DateTime.utc(2030, 3, 14),
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay =
+                        focusedDay; // update `_focusedDay` here as well
+                  });
+                },
+                availableCalendarFormats: {
+                  CalendarFormat.month: '',
+                },
+                selectedDayPredicate: (day) {
+                  bool hasEntry =
+                      _events.keys.any((key) => isSameDay(key, day));
+                  // return isSameDay(_selectedDay, day) || hasEntry;
+                  return hasEntry;
+                },
+                eventLoader: (day) {
+                  return _events[day] ?? [];
+                },
+                calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: Color.fromARGB(255, 241, 110, 110), width: 2),
+                      color: Color.fromARGB(255, 241, 110, 110)),
+                  selectedDecoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Color.fromARGB(255, 241, 134, 110),
                       width: 2,
                     ),
                     color: Color.fromARGB(17, 246, 244, 244).withOpacity(0.1),
-                    
-                    ),
+                  ),
                   selectedTextStyle: TextStyle(
                     color: Colors.black,
                   ),
-                markersMaxCount: 1,
-                markersAlignment: Alignment.bottomCenter,
-                markerMargin: EdgeInsets.symmetric(horizontal: 2),
-                markerDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey.withOpacity(0.3)),
+                  markersMaxCount: 1,
+                  markersAlignment: Alignment.bottomCenter,
+                  markerMargin: EdgeInsets.symmetric(horizontal: 2),
+                  markerDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey.withOpacity(0.3)),
+                ),
               ),
             ),
-          ),
-          Center(
-            child: TodaysInputsCard(),
-          ),
-        ],
+            Center(
+              child: TodaysInputsCard(),
+            ),
+          ],
+        ),
       ),
     );
   }

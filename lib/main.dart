@@ -60,11 +60,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
-    UserProfilePage(),
+    CalendarPage(),
     StatisticsPage(),
     AddPage(),
-    CalendarPage(),
     JournalPage(),
+    UserProfilePage(),
   ];
   int _counter = 0;
 
@@ -136,14 +136,52 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: _selectedIndex,
         selectedItemColor: Color.fromARGB(255, 251, 168, 97),
         onTap: (int index) {
-          // Handle navigation to the selected page
-          _onPageTapped(index, context);
+          if (index == 2) {
+            // Open overlay for adding new content
+            showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.fastfood_outlined),
+                      title: Text('Input a meal'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FoodInputTabs(),
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.emoji_emotions_outlined),
+                      title: Text('Input your mood'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MoodInputTabs(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            // Handle navigation to the selected page
+            _onPageTapped(index, context);
+          }
         },
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.calendar_month),
+            label: 'Calendar',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
@@ -154,12 +192,12 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Add',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Journal',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
