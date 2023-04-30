@@ -80,7 +80,11 @@ class _MealOptionsState extends State<MealOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Afternoon Snack'),
+          title: Text('Afternoon Snack',style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Afternoon Snack',
           groupValue: _selectedMealTime,
           onChanged: (value) {
@@ -91,7 +95,11 @@ class _MealOptionsState extends State<MealOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Dinner'),
+          title: Text('Dinner', style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Dinner',
           groupValue: _selectedMealTime,
           onChanged: (value) {
@@ -102,7 +110,11 @@ class _MealOptionsState extends State<MealOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Evening Snack'),
+          title: Text('Evening Snack', style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Evening Snack',
           groupValue: _selectedMealTime,
           onChanged: (value) {

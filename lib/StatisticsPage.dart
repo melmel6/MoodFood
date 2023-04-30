@@ -32,6 +32,7 @@ class StatisticsPage extends StatefulWidget {
 }
 
 class _StatisticsPageState extends State<StatisticsPage> {
+  int _selectedMonth = DateTime.now().month;
   List<dynamic> _dataMood = [];
   List<dynamic> _dataFood = [];
 
@@ -39,6 +40,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
   List<FoodData> _foodDataHour = [];
   List<MoodData> _moodDataHour = [];
   List<MoodData> _moodDataDay = [];
+
+  List<FoodData> _foodDataMonth = [];
+  List<MoodData> _moodDataMonth = [];
+
+  List<charts.Series<FoodData, String>> _foodforchart = [];
+
   bool _isDaySelected = true;
   bool _isWeekSelected = true;
 
@@ -58,9 +65,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
       _foodDataHour = _calculateAverageFoodPerTimeOfDay(_dataFood);
       _foodDataDay = _calculateAverageFoodPerDay(_dataFood);
 
+      _calculateAverageFoodPerMonth(_dataFood, _selectedMonth);
+
       _dataMood = json.decode(jsonDataMood ?? '') ?? [];
       _moodDataHour = _calculateAverageMoodPerTimeOfDay(_dataMood);
       _moodDataDay = _calculateAverageMoodPerDay(_dataMood);
+
+      _calculateAverageMoodPerMonth(_dataMood, _selectedMonth);
     });
   }
 
@@ -68,11 +79,25 @@ class _StatisticsPageState extends State<StatisticsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal, // Add this
+            //color: isSelected ? Colors.grey : Colors.white,
+          ),
+        ),
         content: Text(content),
         actions: [
           TextButton(
-            child: Text('Close'),
+            child: Text(
+              'Close',
+              style: TextStyle(
+                fontFamily: 'Montserrat', // Add this
+                fontWeight: FontWeight.normal, // Add this
+                //color: isSelected ? Colors.grey : Colors.white,
+              ),
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -80,28 +105,36 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  Widget _buildTitleWithInfoIcon(BuildContext context, String title, String info) {
-  return Row(
-    children: [
-      Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-      SizedBox(width: 8),
-      InkWell(
-        onTap: () => _showInfoPopup(context, title, info),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: EdgeInsets.all(8),
-          child: Icon(
-            Icons.info_outline,
-            color: Color.fromARGB(255, 241, 134, 110),
+  Widget _buildTitleWithInfoIcon(
+      BuildContext context, String title, String info) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.bold, // Add this
+            //color: isSelected ? Colors.grey : Colors.white,
           ),
         ),
-      ),
-    ],
-  );
-}
+        SizedBox(width: 8),
+        InkWell(
+          onTap: () => _showInfoPopup(context, title, info),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            padding: EdgeInsets.all(8),
+            child: Icon(
+              Icons.info_outline,
+              color: Color.fromARGB(255, 241, 134, 110),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   List<FoodData> _calculateAverageFoodPerHour(List<dynamic> data) {
     List<FoodData> foodData = [];
@@ -156,7 +189,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
     timeOfDayFoodScores.forEach((timeOfDay, foodScores) {
       double averageFoodScore = 0.0;
       if (foodScores.isNotEmpty) {
-        averageFoodScore = foodScores.reduce((a, b) => a + b) / foodScores.length;
+        averageFoodScore =
+            foodScores.reduce((a, b) => a + b) / foodScores.length;
       }
 
       foodData.add(FoodData(timeOfDay, averageFoodScore));
@@ -165,6 +199,78 @@ class _StatisticsPageState extends State<StatisticsPage> {
     return foodData;
   }
 
+  void _calculateAverageFoodPerMonth(List<dynamic> data, int month) {
+    List<FoodData> foodData = [];
+
+    // Filter the data to only include items for the specified month
+    List<dynamic> monthData = data.where((item) {
+      DateTime date = DateTime.parse(item['date']);
+      return date.month == month;
+    }).toList();
+
+    // Initialize an empty list to keep track of food scores for each day of the month
+    List<List<int>> foodScoresForDayOfMonth = List.generate(31, (_) => []);
+
+    monthData.forEach((item) {
+      DateTime date = DateTime.parse(item['date']);
+      int dayOfMonth = date.day - 1;
+      foodScoresForDayOfMonth[dayOfMonth].add(item['nutrientInfo']['energy']);
+    });
+
+    for (int i = 0; i < 31; i++) {
+      double averageFoodScoreForDay = 0.0;
+      if (foodScoresForDayOfMonth[i].isNotEmpty) {
+        averageFoodScoreForDay =
+            foodScoresForDayOfMonth[i].reduce((a, b) => a + b) /
+                foodScoresForDayOfMonth[i].length;
+      }
+
+      // Use the DateFormat package to format the day of the month as a string
+      String dayOfMonthString = (i + 1).toString();
+      foodData.add(FoodData(dayOfMonthString, averageFoodScoreForDay));
+    }
+    
+    setState(() {
+      _foodDataMonth = foodData;
+
+    });
+  }
+
+  void _calculateAverageMoodPerMonth(List<dynamic> data, int month) {
+    List<MoodData> moodData = [];
+
+    // Filter the data to only include items for the specified month
+    List<dynamic> monthData = data.where((item) {
+      DateTime date = DateTime.parse(item['date']);
+      return date.month == month;
+    }).toList();
+
+    // Initialize an empty list to keep track of food scores for each day of the month
+    List<List<int>> moodScoresForDayOfMonth = List.generate(31, (_) => []);
+
+    monthData.forEach((item) {
+      DateTime date = DateTime.parse(item['date']);
+      int dayOfMonth = date.day - 1;
+      moodScoresForDayOfMonth[dayOfMonth].add(item['mood']);
+    });
+
+    for (int i = 0; i < 31; i++) {
+      double averageFoodScoreForDay = 0.0;
+      if (moodScoresForDayOfMonth[i].isNotEmpty) {
+        averageFoodScoreForDay =
+            moodScoresForDayOfMonth[i].reduce((a, b) => a + b) /
+                moodScoresForDayOfMonth[i].length;
+      }
+
+      // Use the DateFormat package to format the day of the month as a string
+      String dayOfMonthString = (i + 1).toString();
+      moodData.add(MoodData(dayOfMonthString, averageFoodScoreForDay));
+    }
+    
+    setState(() {
+      _moodDataMonth = moodData;
+    });
+  }
 
   List<FoodData> _calculateAverageFoodPerDay(List<dynamic> data) {
     List<FoodData> foodData = [];
@@ -218,8 +324,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
     return moodData;
   }
 
-  
-
   List<MoodData> _calculateAverageMoodPerTimeOfDay(List<dynamic> data) {
     List<MoodData> moodData = [];
 
@@ -250,7 +354,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
     timeOfDayMoodScores.forEach((timeOfDay, moodScores) {
       double averageMoodScore = 0.0;
       if (moodScores.isNotEmpty) {
-        averageMoodScore = moodScores.reduce((a, b) => a + b) / moodScores.length;
+        averageMoodScore =
+            moodScores.reduce((a, b) => a + b) / moodScores.length;
       }
 
       moodData.add(MoodData(timeOfDay, averageMoodScore));
@@ -258,7 +363,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
     return moodData;
   }
-
 
   List<MoodData> _calculateAverageMoodPerDay(List<dynamic> data) {
     List<MoodData> moodData = [];
@@ -332,6 +436,30 @@ class _StatisticsPageState extends State<StatisticsPage> {
     ];
   }
 
+  List<charts.Series<FoodData, String>> _createDataMonthFood() {
+    return [
+      charts.Series<FoodData, String>(
+        id: 'Food',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (FoodData data, _) => data.hour,
+        measureFn: (FoodData data, _) => data.foodScore,
+        data: _foodDataMonth,
+      ),
+    ];
+  }
+
+  List<charts.Series<MoodData, String>> _createDataMonthMood() {
+    return [
+      charts.Series<MoodData, String>(
+        id: 'Food',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (MoodData data, _) => data.hour,
+        measureFn: (MoodData data, _) => data.moodScore,
+        data: _moodDataMonth,
+      ),
+    ];
+  }
+
   List<charts.Series<FoodData, String>> _createDataHourFood() {
     return [
       charts.Series<FoodData, String>(
@@ -356,16 +484,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
     return [
       charts.Series<MoodData, String>(
-        id: 'Mood',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-          Color.fromARGB(255, 241, 134, 110), // peachy pink color
-        ),
-        domainFn: (MoodData moodData, _) => moodData.hour,
-        measureFn: (MoodData moodData, _) => moodData.moodScore,
-        data: _moodDataDay,
-        labelAccessorFn: (MoodData moodData, _) =>
-            moodData.moodScore != 0.0 ? scoreToText(moodData.moodScore) : ''
-      ),
+          id: 'Mood',
+          colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+                Color.fromARGB(255, 241, 134, 110), // peachy pink color
+              ),
+          domainFn: (MoodData moodData, _) => moodData.hour,
+          measureFn: (MoodData moodData, _) => moodData.moodScore,
+          data: _moodDataDay,
+          labelAccessorFn: (MoodData moodData, _) =>
+              moodData.moodScore != 0.0 ? scoreToText(moodData.moodScore) : ''),
     ];
   }
 
@@ -383,8 +510,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   String scoreToText(double score) {
     if (score <= 1) {
       return 'Awful';
-    }
-    else if (score <= 2) {
+    } else if (score <= 2) {
       return 'Bad';
     } else if (score <= 3) {
       return 'Meh';
@@ -395,22 +521,20 @@ class _StatisticsPageState extends State<StatisticsPage> {
     }
   }
 
-List<charts.Series<MoodData, String>> _createDataHourMood() {
-  return [
-    charts.Series<MoodData, String>(
-      id: 'Mood',
-      colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-        Color.fromARGB(255, 241, 134, 110), // peachy pink color
-      ),
-      domainFn: (MoodData moodData, _) => moodData.hour,
-      measureFn: (MoodData moodData, _) => moodData.moodScore,
-      data: _moodDataHour,
-      labelAccessorFn: (MoodData moodData, _) =>
-          moodData.moodScore != 0.0 ? scoreToText(moodData.moodScore) : ''
-    ),
-  ];
-}
-
+  List<charts.Series<MoodData, String>> _createDataHourMood() {
+    return [
+      charts.Series<MoodData, String>(
+          id: 'Mood',
+          colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+                Color.fromARGB(255, 241, 134, 110), // peachy pink color
+              ),
+          domainFn: (MoodData moodData, _) => moodData.hour,
+          measureFn: (MoodData moodData, _) => moodData.moodScore,
+          data: _moodDataHour,
+          labelAccessorFn: (MoodData moodData, _) =>
+              moodData.moodScore != 0.0 ? scoreToText(moodData.moodScore) : ''),
+    ];
+  }
 
   Widget _buildToggleButton(bool isSelected, String text) {
     return ToggleButtons(
@@ -496,9 +620,9 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
     );
   }
 
-  Widget _buildInfoContainer(String title, IconData icon, String count) {
+  Widget _buildInfoContainer1(String title, IconData icon, String count) {
     return Container(
-      width: 250,
+      width: 150,
       height: 120,
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(8),
@@ -542,6 +666,110 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
               color: Color.fromARGB(255, 255, 117, 75),
             ),
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoContainer(String title1, String title2, String title3,
+      IconData icon, String count1, String count2) {
+    return Container(
+      width: 150,
+      height: 120,
+      margin: EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Icon(
+              icon,
+              size: 25,
+              color: Colors.grey[700],
+            ),
+          ),
+          Expanded(
+            child: Text(
+              title1,
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.normal,
+                color: Colors.grey[700],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title2,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey[700],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      count1,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 117, 75),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title3,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey[700],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      count2,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 255, 117, 75),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -598,112 +826,293 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
     );
   }
 
-Widget _buildSummaryStats() {
-  return 
-    Wrap(
+  Widget _buildChartMonth(isMood) {
+    return charts.BarChart(
+      isMood ? _createDataMonthMood() : _createDataMonthFood(),
+      animate: true,
+      animationDuration: Duration(milliseconds: 500),
+      barRendererDecorator: new charts.BarLabelDecorator<String>(
+        insideLabelStyleSpec: charts.TextStyleSpec(
+          fontFamily: 'Montserrat', // Add this
+          fontWeight: 'Bold', // Add this
+          color: charts.ColorUtil.fromDartColor(Colors.grey),
+          fontSize: 8,
+        ),
+      ),
+      domainAxis: charts.OrdinalAxisSpec(
+        renderSpec: charts.SmallTickRendererSpec(
+          labelRotation: 0,
+          labelAnchor: charts.TickLabelAnchor.centered,
+          labelJustification: charts.TickLabelJustification.outside,
+          labelStyle: charts.TextStyleSpec(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: 'Regular', // Add this
+            fontSize: 12,
+            color: charts.ColorUtil.fromDartColor(Colors.grey),
+          ),
+        ),
+      ),
+      primaryMeasureAxis: charts.NumericAxisSpec(
+        renderSpec: charts.GridlineRendererSpec(
+          lineStyle: charts.LineStyleSpec(
+            color: charts.ColorUtil.fromDartColor(Colors.grey),
+          ),
+          labelStyle: charts.TextStyleSpec(
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: 'Regular', // Add this
+            fontSize: 12,
+            color: charts.ColorUtil.fromDartColor(Colors.grey),
+          ),
+        ),
+      ),
+      defaultRenderer: charts.BarRendererConfig(
+        cornerStrategy: const charts.ConstCornerStrategy(
+          8,
+        ), // set the corner rounding strategy to round to 8 pixels
+        barRendererDecorator: charts.BarLabelDecorator<String>(),
+      ),
+    );
+  }
+
+
+  Widget _buildSummaryStats() {
+    return Wrap(
       alignment: WrapAlignment.center,
       spacing: 8.0,
       children: [
-        _buildInfoContainer('Average Kcal input per day:', Icons.local_dining, '3011'),
-        _buildInfoContainer('Average mood per day:', Icons.mood, '1.8'),
-        _buildInfoContainer('Average emotional score fluctuation:', Icons.stacked_line_chart, '38%'),
+        _buildInfoContainer(' Average Kcal input', 'overall:', 'this week:',
+            Icons.local_dining, '2132', '3011'),
+        _buildInfoContainer('Average mood ', 'overall:', 'this week:',
+            Icons.mood, '3.1', '1.8'),
+        _buildInfoContainer1('Your average emotional score fluctuation:',
+            Icons.stacked_line_chart, '12%'),
       ],
     );
-}
+  }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Statistics',
-      style: TextStyle(
-            fontFamily: 'Montserrat', // Add this
-            fontWeight: FontWeight.normal, // Add this
-          )),
-      
-    ),
-    backgroundColor: Colors.grey[200], // Add a background color
-    body: SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(16.0), // Add padding around the main column
-        child: Column(
-          children: [
-            // _buildSummaryToggleButton(_isWeekSelected),
-            _buildSummaryStats(),
-            SizedBox(height: 30),
-            // Text('Charts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildTitleWithInfoIcon(context, 'Charts', 'This is some information about the charts.'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        _buildToggleButton(_isDaySelected, 'Day'),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Container(
-                        width: 750,
-                        height: 400,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: _buildChart(false),
+  void changeMonth() {
+    final selectedDateTime = DateTime(2023, _selectedMonth);
+    final selectedMonth = DateFormat('MMMM').format(selectedDateTime);
+    print('Selected Month: $selectedMonth');
+
+    _calculateAverageFoodPerMonth(_dataFood, _selectedMonth);
+    _calculateAverageMoodPerMonth(_dataMood, _selectedMonth);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Statistics',
+        style: TextStyle(
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
+        
+      ),
+      backgroundColor: Colors.grey[200], // Add a background color
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0), // Add padding around the main column
+          child: Column(
+            children: [
+              // _buildSummaryToggleButton(_isWeekSelected),
+              _buildSummaryStats(),
+              SizedBox(height: 30),
+              // Text('Charts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildTitleWithInfoIcon(context, 'Your mood', 'This is some information about the charts.'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          _buildToggleButton(_isDaySelected, 'Day'),
+                          IconButton(
+                            icon: Icon(Icons.arrow_left),
+                            onPressed: () {
+                              setState(() {
+                                _selectedMonth--;
+                              });
+                            },
+                          ),
+                          Text(
+                            DateFormat('MMMM yyyy')
+                                .format(DateTime(2023, _selectedMonth)),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.arrow_right),
+                            onPressed: () {
+                              setState(() {
+                                _selectedMonth++;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Container(
-                        width: 750,
-                        height: 400,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: 750,
+                          height: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: _buildChart(false),
                         ),
-                        child: _buildChart(true),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: 750,
+                          height: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: _buildChart(true),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 30),
-            // Text('Image Title', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTitleWithInfoIcon(context, 'Heatmap', 'This is some information about the charts.'),
-                    SizedBox(height: 16),
-                    Image.asset(
-                      '/heatmap.png',
-                      width: 750,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
+              SizedBox(height: 30),
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildTitleWithInfoIcon(context, 'Your month', 'This is some information about the charts.'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.arrow_left),
+                            onPressed: () {
+                              setState(() {
+                                _selectedMonth--;
+                                changeMonth();
+                              });
+                            },
+                          ),
+                          Text(
+                            DateFormat('MMMM yyyy')
+                                .format(DateTime(2023, _selectedMonth)),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.arrow_right),
+                            onPressed: () {
+                              setState(() {
+                                _selectedMonth++;
+                                changeMonth();
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: 750,
+                          height: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: _buildChartMonth(false),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: 750,
+                          height: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: _buildChartMonth(true),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              // Text('Image Title', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTitleWithInfoIcon(context, "Mood-based Food Categories", "Our heatmap can help you see if your mood affects the types of food you eat. The chart shows different food types on the right side and moods on the bottom. You'll see lots of colored squares on the chart. Red squares mean you ate more of a food type during that particular mood. So, for example, the more close to red a square is in the 'sad' column of the 'fat' row, that means the more you tended to eat high-fat foods when you were feeling sad."),
+                      SizedBox(height: 16),
+                      Image.asset(
+                        '/heatmap.png',
+                        width: 750,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

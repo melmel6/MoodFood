@@ -23,12 +23,14 @@ class _FoodInputTabsState extends State<FoodInputTabs>
 
   void _handleSubmit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? nutrientList = prefs.getStringList('foodInputs') ?? [];
+    String? jsonDataFood = prefs.getString('foodInputs');
+    List<dynamic> foodList = json.decode(jsonDataFood ?? '') ?? [];
+
 
     for (var meal in _selectedMeals) {
       Map<String, dynamic> nutrientData = {
         'mealTime': _selectedMealTime,
-        'date': DateTime.now().subtract(Duration(days: 2)).toIso8601String(),
+        'date': DateTime.now().toIso8601String(),
         'label': meal['label'],
         'measure': meal['measure'],
         'weight': meal['weight'],
@@ -41,29 +43,10 @@ class _FoodInputTabsState extends State<FoodInputTabs>
         ),
       };
 
-      String nutrientDataJson = jsonEncode(nutrientData);
-      nutrientList.add(nutrientDataJson);
-
-      Map<String, dynamic> nutrientData2 = {
-        'mealTime': _selectedMealTime,
-        'date': DateTime.now().subtract(Duration(days: 1)).toIso8601String(),
-        'label': meal['label'],
-        'measure': meal['measure'],
-        'weight': meal['weight'],
-        'nutrientInfo': calculateNutrientInfo(
-          meal['weight'], // weight in grams
-          meal['proteinPer100g'], // protein per 100 g
-          meal['fatPer100g'], // fat per 100 g
-          meal['carbsPer100g'], // carbs per 100 g
-          meal['energyPer100g'], // energy per 100 g
-        ),
-      };
-
-      String nutrientData2Json = jsonEncode(nutrientData2);
-      nutrientList.add(nutrientData2Json);
+      foodList.add(nutrientData);
     }
 
-    await prefs.setStringList('foodInputs', nutrientList);
+    await prefs.setString('foodInputs', json.encode(foodList));
 
     _showSuccessDialog(context);
   }
@@ -111,14 +94,16 @@ class _FoodInputTabsState extends State<FoodInputTabs>
                 primary: Colors.white, // sets the button's background color
               ),
               onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                // Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+
               },
               child: Text(
                 'OK',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.pink,
+                  color: Colors.green,
                 ),
               ),
             ),

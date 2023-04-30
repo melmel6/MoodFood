@@ -13,8 +13,6 @@ import 'package:mood_food/tabs_mood.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:mood_food/stats.dart';
-import 'package:mood_food/stats2.dart';
 import 'package:mood_food/UserProfilePage.dart';
 //import 'package:mood_food/AddPage.dart';
 import 'package:mood_food/StatisticsPage.dart';
