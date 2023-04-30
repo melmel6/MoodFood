@@ -62,10 +62,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void _saveFakeDataToLocalStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? fakeDataStorage = prefs.getString('fakeData');
+    String? fakeDataStorage = prefs.getString('foodInputs');
     if (fakeDataStorage == null) {
       String jsonData = await rootBundle.loadString('assets/fake_data.json');
-      await prefs.setString('fakeData', jsonData);
+      // await prefs.setString('fakeData', jsonData);
+
+      // Parse the JSON string into a Map
+      Map<String, dynamic> data = json.decode(jsonData);
+
+      // Extract the moodInputs and foodInputs arrays
+      List<dynamic> moodInputs = data['moodInputs'];
+      List<dynamic> foodInputs = data['foodInputs'];
+
+      // Store the arrays separately in shared preferences
+      await prefs.setString('moodInputs', json.encode(moodInputs));
+      await prefs.setString('foodInputs', json.encode(foodInputs));
 
       print("Loaded fake data");
     } else {
@@ -80,11 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
     Map<String, dynamic> allEntries = {};
 
     for (String key in prefs.getKeys()) {
+      print(key);
       allEntries[key] = prefs.get(key);
     }
 
     // print(allEntries["fakeData"]);
-    print(allEntries["foodInputs"]);
+    // print(allEntries["foodInputs"]);
     print(allEntries["moodInputs"]);
 
     return allEntries;
@@ -93,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     _saveFakeDataToLocalStorage();
   }
 

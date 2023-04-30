@@ -1,23 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
-import 'package:mood_food/food_input_page.dart';
-import 'package:mood_food/calendar_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mood_food/tabs.dart';
 import 'package:mood_food/tabs_mood.dart';
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:mood_food/stats.dart';
-import 'package:mood_food/stats2.dart';
-import 'package:mood_food/UserProfilePage.dart';
-import 'package:mood_food/HomePage.dart';
-import 'package:mood_food/StatisticsPage.dart';
+import 'package:mood_food/view_mood_per_day.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -38,21 +25,21 @@ class _CalendarPageState extends State<CalendarPage> {
     Map<DateTime, List> events = {};
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? foodEntries = prefs.getStringList('foodEntries');
+    String? jsonDataFood= prefs.getString('foodInputs');
 
-    if (foodEntries != null) {
-      for (String entry in foodEntries) {
-        Map<String, dynamic> data = jsonDecode(entry);
-        DateTime date = DateTime.parse(data['date']);
-        DateTime beginningOfDay = DateTime(date.year, date.month, date.day);
-        events[beginningOfDay] = [
-          '$date ${data['label']} (${data['measure']} ${data['weight']} g)'
-        ];
-      }
+    List<dynamic> _dataFood = json.decode(jsonDataFood ?? '') ?? [];
+
+    for (dynamic data in _dataFood) {
+      DateTime date = DateTime.parse(data['date']);
+      DateTime beginningOfDay = DateTime(date.year, date.month, date.day);
+      events[beginningOfDay] = [
+        '$date ${data['label']} (${data['measure']} ${data['weight']} g)'
+      ];
     }
 
     setState(() {
       _events = events;
+      print("events");
       print(events);
     });
   }
@@ -125,26 +112,20 @@ class _CalendarPageState extends State<CalendarPage> {
               calendarStyle: CalendarStyle(
                 todayDecoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.pink, width: 2),
-                    color: Colors.pink),
+                    border: Border.all(color: Color.fromARGB(255, 241, 110, 110), width: 2),
+                    color: Color.fromARGB(255, 241, 110, 110)),
                 selectedDecoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.blue.withOpacity(0.5),
+                      color: Color.fromARGB(255, 241, 134, 110),
                       width: 2,
                     ),
-                    color: Colors.grey.withOpacity(0.3)
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.grey.withOpacity(0.5),
-                    //     spreadRadius: 2,
-                    //     blurRadius: 4,
-                    //     offset: Offset(0, 3),
-                    //   ),
-                    // ]
-                    // border: Border.all(color: Colors.grey, width: 2),
-                    // color: Colors.pink, //.withOpacity(0.3),
+                    color: Color.fromARGB(17, 246, 244, 244).withOpacity(0.1),
+                    
                     ),
+                  selectedTextStyle: TextStyle(
+                    color: Colors.black,
+                  ),
                 markersMaxCount: 1,
                 markersAlignment: Alignment.bottomCenter,
                 markerMargin: EdgeInsets.symmetric(horizontal: 2),
@@ -153,6 +134,9 @@ class _CalendarPageState extends State<CalendarPage> {
                     color: Colors.grey.withOpacity(0.3)),
               ),
             ),
+          ),
+          Center(
+            child: TodaysInputsCard(),
           ),
         ],
       ),

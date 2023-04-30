@@ -40,6 +40,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   List<MoodData> _moodDataHour = [];
   List<MoodData> _moodDataDay = [];
   bool _isDaySelected = true;
+  bool _isWeekSelected = true;
 
   @override
   void initState() {
@@ -49,13 +50,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Future<void> _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jsonData = prefs.getString('fakeData');
+    String? jsonDataFood = prefs.getString('foodInputs');
+    String? jsonDataMood = prefs.getString('moodInputs');
+
     setState(() {
-      _dataFood = json.decode(jsonData ?? '')['foodInputs'] ?? [];
+      _dataFood = json.decode(jsonDataFood ?? '') ?? [];
       _foodDataHour = _calculateAverageFoodPerTimeOfDay(_dataFood);
       _foodDataDay = _calculateAverageFoodPerDay(_dataFood);
 
-      _dataMood = json.decode(jsonData ?? '')['moodInputs'] ?? [];
+      _dataMood = json.decode(jsonDataMood ?? '') ?? [];
       _moodDataHour = _calculateAverageMoodPerTimeOfDay(_dataMood);
       _moodDataDay = _calculateAverageMoodPerDay(_dataMood);
     });
@@ -78,27 +81,27 @@ class _StatisticsPageState extends State<StatisticsPage> {
   }
 
   Widget _buildTitleWithInfoIcon(BuildContext context, String title, String info) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        InkWell(
-          onTap: () => _showInfoPopup(context, title, info),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: EdgeInsets.all(8),
-            child: Icon(
-              Icons.info_outline,
-              color: Color.fromARGB(255, 241, 134, 110),
-            ),
+  return Row(
+    children: [
+      Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      SizedBox(width: 8),
+      InkWell(
+        onTap: () => _showInfoPopup(context, title, info),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.all(8),
+          child: Icon(
+            Icons.info_outline,
+            color: Color.fromARGB(255, 241, 134, 110),
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
   List<FoodData> _calculateAverageFoodPerHour(List<dynamic> data) {
     List<FoodData> foodData = [];
@@ -451,9 +454,51 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
     );
   }
 
+  Widget _buildSummaryToggleButton(bool isSelected) {
+    return ToggleButtons(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'This Week',
+            style: TextStyle(
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.bold, // Add this
+              color: isSelected ? Colors.white : Colors.grey,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Overall',
+            style: TextStyle(
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.bold, // Add this
+              color: isSelected ? Colors.grey : Colors.white,
+            ),
+          ),
+        ),
+      ],
+      isSelected: [isSelected, !isSelected],
+      onPressed: (int newIndex) {
+        setState(() {
+          _isWeekSelected = newIndex == 0;
+        });
+      },
+      borderRadius: BorderRadius.circular(30),
+      color: Color.fromRGBO(255, 173, 155, 1),
+      selectedColor: Color.fromRGBO(255, 173, 155, 1),
+      fillColor: Color.fromRGBO(255, 173, 155, 1),
+      selectedBorderColor: Color.fromRGBO(255, 173, 155, 1),
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+    );
+  }
+
   Widget _buildInfoContainer(String title, IconData icon, String count) {
     return Container(
-      width: 150,
+      width: 250,
       height: 120,
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(8),
@@ -553,6 +598,19 @@ List<charts.Series<MoodData, String>> _createDataHourMood() {
     );
   }
 
+Widget _buildSummaryStats() {
+  return 
+    Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8.0,
+      children: [
+        _buildInfoContainer('Average Kcal input per day:', Icons.local_dining, '3011'),
+        _buildInfoContainer('Average mood per day:', Icons.mood, '1.8'),
+        _buildInfoContainer('Average emotional score fluctuation:', Icons.stacked_line_chart, '38%'),
+      ],
+    );
+}
+
 @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -570,55 +628,10 @@ Widget build(BuildContext context) {
         padding: EdgeInsets.all(16.0), // Add padding around the main column
         child: Column(
           children: [
-               Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                      Text(
-                        'Overall',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat', // Add this
-                          fontWeight: FontWeight.bold, // Add this
-                        ),
-                      ),
-                      Text(
-                        'This Week',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat', // Add this
-                          fontWeight: FontWeight.bold, // Add this
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 2),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.3,
-                    shrinkWrap: true,
-                    children: [
-                      _buildInfoContainer(' Average Kcal input per day:',
-                          Icons.local_dining, '2132'),
-                      _buildInfoContainer('Average Kcal input per day:',
-                          Icons.local_dining, '3011'),
-                      _buildInfoContainer(
-                          'Average mood per day:', Icons.mood, '3.1'),
-                      _buildInfoContainer(
-                          'Average mood per day:', Icons.mood, '1.8'),
-                      _buildInfoContainer(
-                          'Your average emotional score fluctuation:',
-                          Icons.stacked_line_chart,
-                          '12%'),
-                      _buildInfoContainer(
-                          'Average emotional score fluctuation:',
-                          Icons.stacked_line_chart,
-                          '38%'),
-                    ],
-                  ),
+            // _buildSummaryToggleButton(_isWeekSelected),
+            _buildSummaryStats(),
             SizedBox(height: 30),
-            _buildTitleWithInfoIcon(context, 'Charts', 'This is some information about the charts.'),
             // Text('Charts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
             Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
@@ -628,7 +641,7 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    
+                    _buildTitleWithInfoIcon(context, 'Charts', 'This is some information about the charts.'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -664,7 +677,6 @@ Widget build(BuildContext context) {
               ),
             ),
             SizedBox(height: 30),
-            _buildTitleWithInfoIcon(context, 'Heatmap', 'This is some information about the charts.'),
             // Text('Image Title', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Card(
@@ -674,10 +686,17 @@ Widget build(BuildContext context) {
               ),
               child: Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Image.asset(
-                  '/heatmap.png',
-                  width: 750,
-                  fit: BoxFit.cover,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTitleWithInfoIcon(context, 'Heatmap', 'This is some information about the charts.'),
+                    SizedBox(height: 16),
+                    Image.asset(
+                      '/heatmap.png',
+                      width: 750,
+                      fit: BoxFit.cover,
+                    ),
+                  ],
                 ),
               ),
             ),

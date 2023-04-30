@@ -6,7 +6,7 @@ import 'package:mood_food/food_input_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:mood_food/radio_buttons_mood.dart';
-
+import 'package:mood_food/view_mood_per_day.dart';
 
 class MoodInputTabs extends StatefulWidget {
   @override
@@ -23,22 +23,21 @@ class _MoodInputTabsState extends State<MoodInputTabs> with SingleTickerProvider
 
 
   void _handleSubmit() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String>? moodList = prefs.getStringList('moodInputs') ?? [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonDataMood= prefs.getString('moodInputs');
+    List<dynamic> moodList = json.decode(jsonDataMood ?? '') ?? [];
 
-  Map<String, dynamic> moodData = {
-      'moodTime': _selectedMoodTime,
-      'date': DateTime.now().toIso8601String(),
-      'mood': _selectedMood
-    };
+    Map<String, dynamic> moodData = {
+        'moodTime': _selectedMoodTime,
+        'date': DateTime.now().toIso8601String(),
+        'mood': _selectedMood
+      };
 
-  String moodDataJson = jsonEncode(moodData);
-  moodList.add(moodDataJson);
-  await prefs.setStringList('moodInputs', moodList);
+    moodList.add(moodData);
+    await prefs.setString('moodInputs', json.encode(moodList));
 
-
-  _showSuccessDialog(context);
-}
+    _showSuccessDialog(context);
+  }
 
 void _showSuccessDialog(BuildContext context) {
   showDialog(
