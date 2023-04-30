@@ -52,14 +52,6 @@ void _showSuccessDialog(BuildContext context) {
               size: 50,
             ),
             SizedBox(height: 20),
-            Text(
-              'Success!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              )),
-              SizedBox(height: 20),
               Text(
                 'Success!',
                 style: TextStyle(
@@ -70,11 +62,11 @@ void _showSuccessDialog(BuildContext context) {
               ),
               SizedBox(height: 10),
               Text(
-                'Your mood has been saved',
+                'Your mood has been saved.',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontFamily: 'Montserrat', // Add this
-                  fontWeight: FontWeight.bold, // Add this
+                  fontWeight: FontWeight.normal, // Add this
                 ),
               ),
             ],
@@ -85,7 +77,8 @@ void _showSuccessDialog(BuildContext context) {
                 primary: Colors.white, // sets the button's background color
               ),
               onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                // Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               child: Text(
                 'OK',
@@ -93,8 +86,7 @@ void _showSuccessDialog(BuildContext context) {
                   fontSize: 18,
                   fontFamily: 'Montserrat', // Add this
                   fontWeight: FontWeight.bold, // Add this
-
-                  color: Colors.pink,
+                  color: Colors.green,
                 ),
               ),
             ),

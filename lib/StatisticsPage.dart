@@ -61,6 +61,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       _dataMood = json.decode(jsonDataMood ?? '') ?? [];
       _moodDataHour = _calculateAverageMoodPerTimeOfDay(_dataMood);
       _moodDataDay = _calculateAverageMoodPerDay(_dataMood);
+
     });
   }
 

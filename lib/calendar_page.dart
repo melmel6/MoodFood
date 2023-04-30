@@ -6,6 +6,7 @@ import 'package:mood_food/tabs.dart';
 import 'package:mood_food/tabs_mood.dart';
 import 'package:mood_food/view_mood_per_day.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mood_food/view_food_per_day.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -40,8 +41,8 @@ class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver
 
     setState(() {
       _events = events;
-      print("events");
-      print(events);
+      // print("events");
+      // print(events);
     });
   }
 
@@ -165,6 +166,10 @@ class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver
             Center(
               child: TodaysInputsCard(),
             ),
+            SizedBox(height:20),
+            Center(
+              child: TodaysFoodInputsCard(),
+            ),
           ],
         ),
       ),
@@ -195,7 +200,7 @@ Widget _buildInfoContainer(
         SizedBox(height: 8),
         Text(
           title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Montserrat' ),
         ),
         SizedBox(height: 8),
         Text(info),

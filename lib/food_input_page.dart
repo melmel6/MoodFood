@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mood_food/api_handler.dart';
 import 'package:mood_food/nutrient_info_box.dart';
-import 'package:mood_food/submit_button.dart';
 
 class FoodInputPage extends StatefulWidget {
   final String? selectedMealTime;

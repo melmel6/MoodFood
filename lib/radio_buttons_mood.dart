@@ -25,7 +25,11 @@ class _MoodTimeOptionsState extends State<MoodTimeOptions> {
     return Column(
       children: [
         RadioListTile(
-          title: Text('Morning'),
+          title: Text('Morning',style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Morning',
           groupValue: _selectedMoodTime,
           onChanged: (value) {
@@ -36,7 +40,11 @@ class _MoodTimeOptionsState extends State<MoodTimeOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Afternoon'),
+          title: Text('Afternoon', style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Afternoon',
           groupValue: _selectedMoodTime,
           onChanged: (value) {
@@ -47,7 +55,11 @@ class _MoodTimeOptionsState extends State<MoodTimeOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Evening'),
+          title: Text('Evening', style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Evening',
           groupValue: _selectedMoodTime,
           onChanged: (value) {
@@ -58,7 +70,11 @@ class _MoodTimeOptionsState extends State<MoodTimeOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Night'),
+          title: Text('Night', style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            )),
           value: 'Night',
           groupValue: _selectedMoodTime,
           onChanged: (value) {

@@ -8,8 +8,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:mood_food/stats.dart';
-import 'package:mood_food/stats2.dart';
 import 'package:mood_food/UserProfilePage.dart';
 import 'package:mood_food/AddPage.dart';
 import 'package:mood_food/Journal.dart';
@@ -100,13 +98,13 @@ class _MyHomePageState extends State<MyHomePage> {
     Map<String, dynamic> allEntries = {};
 
     for (String key in prefs.getKeys()) {
-      print(key);
+      // print(key);
       allEntries[key] = prefs.get(key);
     }
 
     // print(allEntries["fakeData"]);
     // print(allEntries["foodInputs"]);
-    print(allEntries["moodInputs"]);
+    // print(allEntries["moodInputs"]);
 
     return allEntries;
   }
