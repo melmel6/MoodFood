@@ -1,15 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'dart:convert';
+import 'package:flutter/rendering.dart';
 
 
-class StatisticsPage extends StatefulWidget {
-  const StatisticsPage({Key? key}) : super(key: key);
+class EmotionaleatingPage extends StatefulWidget {
+  const EmotionaleatingPage({Key? key}) : super(key: key);
 
   @override
-  _StatisticsPageState createState() => _StatisticsPageState();
+  _EmotionaleatingPageState createState() => _EmotionaleatingPageState();
 }
 
 class EmotionalEatingScoreData {
@@ -19,9 +20,8 @@ class EmotionalEatingScoreData {
   EmotionalEatingScoreData(this.date, this.score);
 }
 
-class _StatisticsPageState extends State<StatisticsPage> {
-  bool _showWeekly = false;
-  DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
+class _EmotionaleatingPageState extends State<EmotionaleatingPage> {
+  bool _showWeekly = true;
 
   Future<Map<String, List<dynamic>>> _loadData() async {
     final data = await rootBundle.loadString('assets/fake_data.json');
@@ -89,8 +89,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   List<EmotionalEatingScoreData> _calculateEmotionalEatingScore(Map<String, List<dynamic>> moodDataByPeriod, Map<String, List<dynamic>> foodDataByPeriod, bool showWeekly) {
   final List<EmotionalEatingScoreData> scores = [];
+
   final String dateFormat = showWeekly ? 'w' : 'yyyy-MM-dd';
-  final String chartLabel = showWeekly ? 'Weekly Emotional Eating Score' : 'Daily Emotional Eating Score';
+  final String chartLabel = showWeekly ? 'Emotional Eating Score over the last week' : 'Emotional Eating Score over all time';
 
   final groupedMoodData = _groupDataByDate(moodDataByPeriod.values.expand((x) => x).toList(), _showWeekly);
   final groupedFoodData = _groupDataByDate(foodDataByPeriod.values.expand((x) => x).toList(), _showWeekly);
@@ -115,132 +116,159 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
 
   List<charts.Series<EmotionalEatingScoreData, DateTime>> _createChartData(List<EmotionalEatingScoreData> data) {
-    return [      charts.Series<EmotionalEatingScoreData, DateTime>(        id: 'EmotionalEatingScore',        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,        domainFn: (EmotionalEatingScoreData scoreData, _) => scoreData.date,        measureFn: (EmotionalEatingScoreData scoreData, _) => scoreData.score,        data: data,      )    ];
+  return [
+    charts.Series<EmotionalEatingScoreData, DateTime>(
+      id: 'EmotionalEatingScore',
+      colorFn: (_, __) => charts.MaterialPalette.pink.shadeDefault,
+      domainFn: (EmotionalEatingScoreData scoreData, _) => scoreData.date,
+      measureFn: (EmotionalEatingScoreData scoreData, _) => scoreData.score,
+      data: data,
+      strokeWidthPxFn: (_, __) => 4, // Make the line thicker
+    )
+  ];
+}
+
+
+  List<EmotionalEatingScoreData> _filterLastMonthData(List<EmotionalEatingScoreData> data) {
+    final lastDate = data.last.date;
+    final monthAgo = DateTime(lastDate.year, lastDate.month - 1, lastDate.day);
+    return data.where((scoreData) => scoreData.date.isAfter(monthAgo)).toList();
   }
 
-  void _navigateToPreviousMonth() {
-    setState(() {
-      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
-    });
+
+  Widget _buildToggleButton(bool showWeekly, String text) {
+    return ToggleButtons(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'This Week',
+            style: TextStyle(
+              color: showWeekly ? Colors.white : Colors.grey,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Overall',
+            style: TextStyle(
+              color: showWeekly ? Colors.grey : Colors.white,
+            ),
+          ),
+        ),
+      ],
+      isSelected: [showWeekly, !showWeekly],
+      onPressed: (int newIndex) {
+        setState(() {
+          _showWeekly = newIndex == 0;
+        });
+      },
+      borderRadius: BorderRadius.circular(30),
+      color: Color.fromRGBO(255, 173, 155, 1),
+      selectedColor: Color.fromRGBO(255, 173, 155, 1),
+      fillColor: Color.fromRGBO(255, 173, 155, 1),
+      selectedBorderColor: Color.fromRGBO(255, 173, 155, 1),
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+    );
   }
 
-  void _navigateToNextMonth() {
-    setState(() {
-      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
-    });
-  }
+  
 
-   List<EmotionalEatingScoreData> _filterDataForCurrentMonth(List<EmotionalEatingScoreData> data) {
-    return data.where((scoreData) {
-      return scoreData.date.year == _currentMonth.year && scoreData.date.month == _currentMonth.month;
-    }).toList();
-  }
-
-   @override
+  @override
   Widget build(BuildContext context) {
     // Declare chartLabel here
-    final String chartLabel = _showWeekly ? 'Weekly Emotional Eating Score' : 'Daily Emotional Eating Score';
+    final String chartLabel = _showWeekly ? 'Emotional Eating Score over the last week' : 'Emotional Eating Score over all time';
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Statistics'),
-        actions: [
-          Switch(
-            value: _showWeekly,
-            onChanged: (value) {
-              setState(() {
-                _showWeekly = value;
-              });
-            },
-            activeTrackColor: Colors.lightGreenAccent,
-            activeColor: Colors.green,
-          ),
-        ],
+      
       ),
       body: FutureBuilder<Map<String, List<dynamic>>>(
-        future: _loadData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final data = snapshot.data!;
-            final moodDataByDate = _groupDataByDate(data['moodInputs'] as List<dynamic>?, false);
-            final foodDataByDate = _groupDataByDate(data['foodInputs'] as List<dynamic>?, false);
-            final emotionalEatingScores = _calculateEmotionalEatingScore(moodDataByDate, foodDataByDate, _showWeekly);
-            final filteredData = _filterDataForCurrentMonth(emotionalEatingScores);
-            final chartData = _createChartData(filteredData);
+  future: _loadData(),
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      final data = snapshot.data!;
+      final moodDataByDate = _groupDataByDate(data['moodInputs'] as List<dynamic>?, false);
+      final foodDataByDate = _groupDataByDate(data['foodInputs'] as List<dynamic>?, false);
+      final emotionalEatingScores = _calculateEmotionalEatingScore(moodDataByDate, foodDataByDate, _showWeekly);
+      final lastMonthEmotionalEatingScores = _filterLastMonthData(emotionalEatingScores);
+      final chartData = _createChartData(_showWeekly ? lastMonthEmotionalEatingScores : emotionalEatingScores);
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      onPressed: _navigateToPreviousMonth,
-                      icon: const Icon(Icons.arrow_back_ios),
-                    ),
-                    Text(DateFormat('MMMM yyyy').format(_currentMonth)),
-                    IconButton(
-                      onPressed: _navigateToNextMonth,
-                      icon: const Icon(Icons.arrow_forward_ios),
+      return Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+         decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: 250.0,
-                    child: charts.TimeSeriesChart(
-                      chartData,
-                      animate: true,
-                      dateTimeFactory: const charts.LocalDateTimeFactory(),
-                      domainAxis: charts.DateTimeAxisSpec(
-                        tickProviderSpec: charts.DayTickProviderSpec(increments: [1]),
-                        tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
-                          day: charts.TimeFormatterSpec(
-                            format: 'd',
-                            transitionFormat: 'MM/dd/yyyy',
-                          ),
-                        ),
-                        renderSpec: charts.SmallTickRendererSpec(
-                          labelStyle: charts.TextStyleSpec(
-                            fontSize: 12,
-                            color: charts.MaterialPalette.black,
-                          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 250.0,
+                  child: charts.TimeSeriesChart(
+                    chartData,
+                    animate: true,
+                    dateTimeFactory: const charts.LocalDateTimeFactory(),
+                    domainAxis: charts.DateTimeAxisSpec(
+                      renderSpec: charts.SmallTickRendererSpec(
+                        labelStyle: charts.TextStyleSpec(
+                          fontSize: 12,
+                          color: charts.MaterialPalette.black,
                         ),
                       ),
-                      primaryMeasureAxis: charts.NumericAxisSpec(
-                        renderSpec: charts.GridlineRendererSpec(
-                          labelStyle: charts.TextStyleSpec(
-                            fontSize: 12,
-                            color: charts.MaterialPalette.black,
-                          ),
-                          lineStyle: charts.LineStyleSpec(
-                            color: charts.MaterialPalette.gray.shade300,
-                          ),
-                        ),
-                      ),
-                      defaultRenderer: charts.LineRendererConfig(
-                        includePoints: true,
-                      ),
-                      behaviors: [
-                        charts.ChartTitle(
-                          chartLabel,
-                          behaviorPosition: charts.BehaviorPosition.top,
-                          titleOutsideJustification: charts.OutsideJustification.start,
-                        ),
-                      ],
                     ),
+                    primaryMeasureAxis: charts.NumericAxisSpec(
+                      renderSpec: charts.GridlineRendererSpec(
+                        labelStyle: charts.TextStyleSpec(
+                          fontSize: 12,
+                          color: charts.MaterialPalette.black,
+                        ),
+                        lineStyle: charts.LineStyleSpec(
+                          color: charts.MaterialPalette.gray.shade300,
+                        ),
+                      ),
+                    ),
+                    defaultRenderer: charts.LineRendererConfig(
+                      includePoints: true,
+                    ),
+                    behaviors: [
+                      charts.ChartTitle(
+                        chartLabel,
+                        behaviorPosition: charts.BehaviorPosition.top,
+                        titleOutsideJustification: charts.OutsideJustification.start,
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error loading data: ${snapshot.error}');
-          } else {
+              ),
+              Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _buildToggleButton(_showWeekly, "Show Weekly Data"),
+                    ),
+            ],
+          ),
+        ),
+      );
+    } else if (snapshot.hasError) {
+      return Text('Error loading data: ${snapshot.error}');
+    } else {
             return const Center(child: CircularProgressIndicator());
           }
         },
       ),
     );
   }
-}
+}    
