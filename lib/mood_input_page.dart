@@ -5,7 +5,9 @@ class MoodInputPage extends StatefulWidget {
 
   final void Function(dynamic) onMoodAdded;
 
-  const MoodInputPage({Key? key, required this.selectedMoodTime, required this.onMoodAdded}) : super(key: key);
+  const MoodInputPage(
+      {Key? key, required this.selectedMoodTime, required this.onMoodAdded})
+      : super(key: key);
 
   @override
   _MoodInputPageState createState() => _MoodInputPageState();
@@ -14,7 +16,13 @@ class MoodInputPage extends StatefulWidget {
 class _MoodInputPageState extends State<MoodInputPage> {
   int? _selectedMood;
 
-  final List<Map<String, dynamic>> _moods = [    {'label': 'Awful', 'emoji': '😞', 'color': Colors.red},    {'label': 'Bad', 'emoji': '🙁', 'color': Colors.orange},    {'label': 'Meh', 'emoji': '😐', 'color': Colors.yellow},    {'label': 'Good', 'emoji': '🙂', 'color': Colors.lightGreen},    {'label': 'Super', 'emoji': '😊', 'color': Colors.green},  ];
+  final List<Map<String, dynamic>> _moods = [
+    {'label': 'Awful', 'emoji': '😞', 'color': Colors.red},
+    {'label': 'Bad', 'emoji': '🙁', 'color': Colors.orange},
+    {'label': 'Meh', 'emoji': '😐', 'color': Colors.yellow},
+    {'label': 'Good', 'emoji': '🙂', 'color': Colors.lightGreen},
+    {'label': 'Super', 'emoji': '😊', 'color': Colors.green},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +38,9 @@ class _MoodInputPageState extends State<MoodInputPage> {
                   Text(
                     'How are you feeling?',
                     style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      fontSize: 24,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.bold, // Add this
                     ),
                   ),
                   const SizedBox(height: 25.0),
@@ -40,7 +48,8 @@ class _MoodInputPageState extends State<MoodInputPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: _moods.map(
                       (mood) {
-                        final isSelected = _selectedMood == _moods.indexOf(mood);
+                        final isSelected =
+                            _selectedMood == _moods.indexOf(mood);
                         return InkWell(
                           onTap: () {
                             setState(() {
@@ -53,14 +62,17 @@ class _MoodInputPageState extends State<MoodInputPage> {
                             child: Column(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(isSelected ? 8.0 : 0.0),
+                                  padding:
+                                      EdgeInsets.all(isSelected ? 8.0 : 0.0),
                                   decoration: BoxDecoration(
                                     color: isSelected ? Colors.white : null,
-                                    borderRadius: BorderRadius.circular(isSelected ? 50.0 : 0.0),
+                                    borderRadius: BorderRadius.circular(
+                                        isSelected ? 50.0 : 0.0),
                                     boxShadow: isSelected
                                         ? [
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
                                               spreadRadius: 5,
                                               blurRadius: 7,
                                               offset: Offset(0, 3),
@@ -100,5 +112,3 @@ class _MoodInputPageState extends State<MoodInputPage> {
     );
   }
 }
-
-

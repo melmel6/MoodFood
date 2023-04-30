@@ -59,7 +59,14 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar'),
+        title: Text(
+          'Calendar',
+          style: TextStyle(
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal, // Add this
+          ),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,53 +144,6 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           Center(
             child: TodaysInputsCard(),
-          ),
-        ],
-      ),
-      floatingActionButton: Stack(
-        children: [
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: Icon(Icons.fastfood_outlined),
-                          title: Text('Input a meal'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FoodInputTabs(),
-                              ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.emoji_emotions_outlined),
-                          title: Text('Input your mood'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MoodInputTabs(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Icon(Icons.add),
-            ),
           ),
         ],
       ),
