@@ -7,7 +7,9 @@ class FoodInputPage extends StatefulWidget {
   final String? selectedMealTime;
   final void Function(dynamic) onMealAdded;
 
-  const FoodInputPage({Key? key, this.selectedMealTime, required this.onMealAdded}) : super(key: key);
+  const FoodInputPage(
+      {Key? key, this.selectedMealTime, required this.onMealAdded})
+      : super(key: key);
 
   @override
   _FoodInputPageState createState() => _FoodInputPageState();
@@ -18,8 +20,6 @@ class _FoodInputPageState extends State<FoodInputPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _searchController = TextEditingController();
 
-
-  
   dynamic _searchResponse;
   String _searchQuery = '';
   List<dynamic> _foods = [];
@@ -32,14 +32,13 @@ class _FoodInputPageState extends State<FoodInputPage> {
 
   List<dynamic> _selectedFoods = [];
 
-
   Future<void> _searchFood() async {
     if (_searchQuery.isNotEmpty) {
       final response = await _apiHandler.getFood(_searchQuery);
       final foods = response['hints']
-        .map<dynamic>((hint) => hint['food'])
-        .toSet()
-        .toList();
+          .map<dynamic>((hint) => hint['food'])
+          .toSet()
+          .toList();
       // Extract unique food labels from response
       final foodLabels = response['hints']
           .map<String>((hint) => hint['food']['label'].toString())
@@ -48,14 +47,14 @@ class _FoodInputPageState extends State<FoodInputPage> {
       setState(() {
         _foodLabels = foodLabels;
         _foods = foods;
-        _searchResponse = response['hints']; 
+        _searchResponse = response['hints'];
       });
     }
   }
 
   void _addSelectedFood() {
-  if (_selectedFood != null && _selectedMeasure != null) {
-    var meal = {
+    if (_selectedFood != null && _selectedMeasure != null) {
+      var meal = {
         'label': _selectedLabel,
         'measure': _selectedMeasure['label'],
         'weight': _selectedMeasure['weight'],
@@ -65,24 +64,23 @@ class _FoodInputPageState extends State<FoodInputPage> {
         'energyPer100g': _selectedFood['nutrients']['ENERC_KCAL'],
       };
 
-    setState(() {
-      _selectedFoods.add(meal);
-      _selectedFood = null;
-      _selectedMeasure = null;
-      _measures = [];
-      _foodLabels = [];
-      _searchController.clear();
-    });
-    widget.onMealAdded(meal); // Call the callback function to add the meal
-    // Navigator.pop(context); // Navigate back to the Meal Plan page
+      setState(() {
+        _selectedFoods.add(meal);
+        _selectedFood = null;
+        _selectedMeasure = null;
+        _measures = [];
+        _foodLabels = [];
+        _searchController.clear();
+      });
+      widget.onMealAdded(meal); // Call the callback function to add the meal
+      // Navigator.pop(context); // Navigate back to the Meal Plan page
+    }
   }
-  
-}
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Padding(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
         key: _formKey,
@@ -98,11 +96,13 @@ Widget build(BuildContext context) {
                 setState(() {
                   _searchQuery = value;
                   _selectedLabel = null;
-                  _selectedFood = null; // Reset the selected food when the search query changes
+                  _selectedFood =
+                      null; // Reset the selected food when the search query changes
                   _selectedFoodComplete = null;
                   _measures = [];
                   _selectedMeasure = null;
-                  _foodLabels = []; // Clear the dropdown list when the search query changes
+                  _foodLabels =
+                      []; // Clear the dropdown list when the search query changes
                 });
                 _searchFood();
               },
@@ -116,7 +116,11 @@ Widget build(BuildContext context) {
                     setState(() {
                       _selectedFood = value;
                       _selectedLabel = value['label'];
-                      _selectedFoodComplete = _searchResponse.firstWhere((response) => response['food']['foodId'] == _selectedFood['foodId'], orElse: () => null);
+                      _selectedFoodComplete = _searchResponse.firstWhere(
+                          (response) =>
+                              response['food']['foodId'] ==
+                              _selectedFood['foodId'],
+                          orElse: () => null);
                       _measures = _selectedFoodComplete['measures'];
                     });
                     print('Selected Food: $_selectedFood');
@@ -125,11 +129,11 @@ Widget build(BuildContext context) {
                     print('Measures:, $_measures');
                   },
                   items: _foods
-                      .map<DropdownMenuItem<dynamic>>((food) =>
-                          DropdownMenuItem<dynamic>(
-                            value: food,
-                            child: Text(food['label']),
-                          ))
+                      .map<DropdownMenuItem<dynamic>>(
+                          (food) => DropdownMenuItem<dynamic>(
+                                value: food,
+                                child: Text(food['label']),
+                              ))
                       .toList(),
                   decoration: InputDecoration(
                     labelText: 'Select a food',
@@ -150,11 +154,11 @@ Widget build(BuildContext context) {
                     print('Selected Measure: $_selectedMeasure');
                   },
                   items: _measures
-                      .map<DropdownMenuItem<dynamic>>((measure) =>
-                          DropdownMenuItem<dynamic>(
-                            value: measure,
-                            child: Text(measure['label']),
-                          ))
+                      .map<DropdownMenuItem<dynamic>>(
+                          (measure) => DropdownMenuItem<dynamic>(
+                                value: measure,
+                                child: Text(measure['label']),
+                              ))
                       .toList(),
                   decoration: InputDecoration(
                     labelText: 'Select a measure',
@@ -171,7 +175,11 @@ Widget build(BuildContext context) {
                   children: [
                     Text(
                       'Selected weight:',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Montserrat', // Add this
+                        fontWeight: FontWeight.normal, // Add this
+                      ),
                     ),
                     CustomBadge(
                       label: _selectedMeasure['weight'].toStringAsFixed(2),
@@ -187,27 +195,29 @@ Widget build(BuildContext context) {
             //   fat: _selectedFood['nutrients']['FAT'].toStringAsFixed(2),
             //   carbs: _selectedFood['nutrients']['CHOCDF'].toStringAsFixed(2),
             //   energy: _selectedFood['nutrients']['ENERC_KCAL'].toStringAsFixed(2),
-              
+
             // ),
 
-            
-
-            if(_selectedMeasure != null)
+            if (_selectedMeasure != null)
               Container(
-                width: double.infinity,
-                height: 50,
-                margin: EdgeInsets.all(16),
-                child: ElevatedButton(
-                  onPressed: _addSelectedFood,
-                  child: Text('Add'),
-                )
-              )
+                  width: double.infinity,
+                  height: 50,
+                  margin: EdgeInsets.all(16),
+                  child: ElevatedButton(
+                    onPressed: _addSelectedFood,
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat', // Add this
+                        fontWeight: FontWeight.normal, // Add this
+                      ),
+                    ),
+                  ))
           ],
         ),
       ),
-    )
-  );
-}
+    ));
+  }
 }
 
 class CustomBadge extends StatelessWidget {
@@ -243,7 +253,6 @@ class CustomBadge extends StatelessWidget {
   }
 }
 
-
 class SearchBar extends StatelessWidget {
   final String hintText;
   final ValueChanged<String> onChanged;
@@ -276,5 +285,3 @@ class SearchBar extends StatelessWidget {
     );
   }
 }
-
-

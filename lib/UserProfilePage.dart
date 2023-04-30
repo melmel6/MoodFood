@@ -17,6 +17,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 251, 168, 97),
         title: Text(
           'User Profile',
           style:
@@ -45,7 +46,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     backgroundImage: NetworkImage(
                         'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
                   ),
-                  ElevatedButton.icon(
+                  OutlinedButton.icon(
                     onPressed: () {
                       // TODO: Implement edit profile logic
                     },
@@ -54,11 +55,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       'Edit Profile',
                       style: TextStyle(fontFamily: 'Montserrat'),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).primaryColor,
-                      onPrimary: Colors.white,
+                    style: OutlinedButton.styleFrom(
+                      primary: Color.fromARGB(255, 251, 168, 97),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
+                      ),
+                      side: BorderSide(
+                        width: 2,
+                        color: Color.fromARGB(255, 251, 168, 97),
                       ),
                     ),
                   ),

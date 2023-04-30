@@ -5,7 +5,9 @@ class MealOptions extends StatefulWidget {
   final void Function(String?) onselectedMealTime;
   final String? initialValue;
 
-  const MealOptions({Key? key, required this.onselectedMealTime, this.initialValue}) : super(key: key);
+  const MealOptions(
+      {Key? key, required this.onselectedMealTime, this.initialValue})
+      : super(key: key);
 
   @override
   _MealOptionsState createState() => _MealOptionsState();
@@ -19,13 +21,19 @@ class _MealOptionsState extends State<MealOptions> {
     _selectedMealTime = widget.initialValue;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         RadioListTile(
-          title: Text('Breakfast'),
+          title: Text(
+            'Breakfast',
+            style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            ),
+          ),
           value: 'Breakfast',
           groupValue: _selectedMealTime,
           onChanged: (value) {
@@ -36,7 +44,14 @@ class _MealOptionsState extends State<MealOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Morning Snack'),
+          title: Text(
+            'Morning Snack',
+            style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            ),
+          ),
           value: 'Morning Snack',
           groupValue: _selectedMealTime,
           onChanged: (value) {
@@ -47,7 +62,14 @@ class _MealOptionsState extends State<MealOptions> {
           },
         ),
         RadioListTile(
-          title: Text('Lunch'),
+          title: Text(
+            'Lunch',
+            style: TextStyle(
+              //fontSize: 12,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.normal, // Add this
+            ),
+          ),
           value: 'Lunch',
           groupValue: _selectedMealTime,
           onChanged: (value) {
@@ -94,4 +116,3 @@ class _MealOptionsState extends State<MealOptions> {
     );
   }
 }
-

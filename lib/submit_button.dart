@@ -86,7 +86,7 @@ class _SubmitButtonState extends State<SubmitButton> {
 
           Map<String, dynamic> nutrientData = {
             'mealTime': widget.mealTime,
-            'date': proxthes.toIso8601String(),
+            'date': now.toIso8601String(),
             'label': widget.label,
             'measure': widget.measure,
             'weight': widget.weight,
@@ -96,20 +96,6 @@ class _SubmitButtonState extends State<SubmitButton> {
           //Save to local storage
           String nutrientDataJson = jsonEncode(nutrientData);
           nutrientList.add(nutrientDataJson);
-
-          Map<String, dynamic> nutrientData2 = {
-            'mealTime': widget.mealTime,
-            'date': yesterdayAtThisTime.toIso8601String(),
-            'label': widget.label,
-            'measure': widget.measure,
-            'weight': widget.weight,
-            'nutrientInfo': nutrientInfo
-          };
-
-          //Save to local storage
-          String nutrientData2Json = jsonEncode(nutrientData2);
-          nutrientList.add(nutrientData2Json);
-          await prefs.setStringList('foodEntries', nutrientList);
 
           _showSuccessDialog(context);
         },
