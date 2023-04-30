@@ -7,98 +7,97 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:mood_food/radio_buttons_mood.dart';
 
-
 class MoodInputTabs extends StatefulWidget {
   @override
   _MoodInputTabsState createState() => _MoodInputTabsState();
 }
 
-class _MoodInputTabsState extends State<MoodInputTabs> with SingleTickerProviderStateMixin {
+class _MoodInputTabsState extends State<MoodInputTabs>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _currentTabIndex = 0;
 
   String? _selectedMoodTime;
   int? _selectedMood;
 
-
-
   void _handleSubmit() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String>? moodList = prefs.getStringList('moodInputs') ?? [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? moodList = prefs.getStringList('moodInputs') ?? [];
 
-  Map<String, dynamic> moodData = {
+    Map<String, dynamic> moodData = {
       'moodTime': _selectedMoodTime,
       'date': DateTime.now().toIso8601String(),
       'mood': _selectedMood
     };
 
-  String moodDataJson = jsonEncode(moodData);
-  moodList.add(moodDataJson);
-  await prefs.setStringList('moodInputs', moodList);
+    String moodDataJson = jsonEncode(moodData);
+    moodList.add(moodDataJson);
+    await prefs.setStringList('moodInputs', moodList);
 
+    _showSuccessDialog(context);
+  }
 
-  _showSuccessDialog(context);
-}
-
-void _showSuccessDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 50,
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Success!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 50,
               ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Your mood has been saved',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
+              SizedBox(height: 20),
+              Text(
+                'Success!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: 'Montserrat', // Add this
+                  fontWeight: FontWeight.bold, // Add this
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Your mood has been saved',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: 'Montserrat', // Add this
+                  fontWeight: FontWeight.bold, // Add this
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white, // sets the button's background color
+              ),
+              onPressed: () {
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              },
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Montserrat', // Add this
+                  fontWeight: FontWeight.bold, // Add this
+
+                  color: Colors.pink,
+                ),
               ),
             ),
           ],
-        ),
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.white, // sets the button's background color
-            ),
-            onPressed: () {
-              Navigator.popUntil(context, ModalRoute.withName('/'));
-            },
-            child: Text(
-              'OK',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.pink,
-              ),
-            ),
-          ),
-        ],
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -108,8 +107,7 @@ void _showSuccessDialog(BuildContext context) {
       setState(() {
         _currentTabIndex = _tabController.index;
       });
-      if (_currentTabIndex == 0) {
-      }
+      if (_currentTabIndex == 0) {}
     });
   }
 
@@ -123,7 +121,14 @@ void _showSuccessDialog(BuildContext context) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log your mood'),
+        title: Text(
+          'Log your mood',
+          style: TextStyle(
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal, // Add this
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -138,33 +143,38 @@ void _showSuccessDialog(BuildContext context) {
             },
             child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                  //fontSize: 12,
+                  fontFamily: 'Montserrat', // Add this
+                  fontWeight: FontWeight.normal, // Add this
+                  color: Colors.white),
             ),
           ),
         ],
-        
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
           // content of tab 1
-          MoodTimeOptions(onselectedMoodTime: (value) {
-            // update the selected value in the parent's state
-            setState(() {
-              _selectedMoodTime = value;
-            });
-          },
-          initialValue: _selectedMoodTime, // pass the selected meal value as the initialValue parameter
+          MoodTimeOptions(
+            onselectedMoodTime: (value) {
+              // update the selected value in the parent's state
+              setState(() {
+                _selectedMoodTime = value;
+              });
+            },
+            initialValue:
+                _selectedMoodTime, // pass the selected meal value as the initialValue parameter
           ),
           // content of tab 2
-         MoodInputPage(
-          selectedMoodTime: _selectedMoodTime,
-          onMoodAdded: (value) {
-            // update the selected value in the parent's state
-            setState(() {
-              _selectedMood = value;
-            });
-         })
+          MoodInputPage(
+              selectedMoodTime: _selectedMoodTime,
+              onMoodAdded: (value) {
+                // update the selected value in the parent's state
+                setState(() {
+                  _selectedMood = value;
+                });
+              })
         ],
       ),
       bottomNavigationBar: Container(
@@ -187,11 +197,13 @@ void _showSuccessDialog(BuildContext context) {
                   ? null // disable next button on first tab if meal time not set
                   : _currentTabIndex == 1 && _selectedMood == null
                       ? null // disable next button on second tab if no meal is selected
-                      : _currentTabIndex == 1 ? _handleSubmit : () {
-                          setState(() {
-                            _tabController.animateTo(_currentTabIndex + 1);
-                          });
-                        },
+                      : _currentTabIndex == 1
+                          ? _handleSubmit
+                          : () {
+                              setState(() {
+                                _tabController.animateTo(_currentTabIndex + 1);
+                              });
+                            },
               child: Text(_currentTabIndex == 1 ? 'Submit' : 'Next'),
             ),
           ],

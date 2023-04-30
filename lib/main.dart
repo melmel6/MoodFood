@@ -6,11 +6,13 @@ import 'package:mood_food/tabs.dart';
 import 'package:mood_food/tabs_mood.dart';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:mood_food/stats.dart';
 import 'package:mood_food/stats2.dart';
 import 'package:mood_food/UserProfilePage.dart';
-import 'package:mood_food/HomePage.dart';
+import 'package:mood_food/AddPage.dart';
+import 'package:mood_food/Journal.dart';
 import 'package:mood_food/StatisticsPage.dart';
 
 void main() {
@@ -26,18 +28,23 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FoodMood',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primarySwatch: MaterialColor(
+          0xFBA861, // Primary color value
+          <int, Color>{
+            50: Color(0xFFFFF6E5),
+            100: Color(0xFFFFE9C5),
+            200: Color(0xFFFFDBA4),
+            300: Color(0xFFFFCD82),
+            400: Color(0xFFFFC075),
+            500: Color(0xFFFBBA61),
+            600: Color(0xFFF7B255),
+            700: Color(0xFFF3AD4A),
+            800: Color(0xFFEFA840),
+            900: Color(0xFFE99A2D),
+          },
+        ),
       ),
       home: const MyHomePage(title: 'MoodFood'),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Home'),
     );
   }
 }
@@ -55,7 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     UserProfilePage(),
     StatisticsPage(),
+    AddPage(),
     CalendarPage(),
+    JournalPage(),
   ];
   int _counter = 0;
 
@@ -110,12 +119,16 @@ class _MyHomePageState extends State<MyHomePage> {
       //   title: Text(widget.title),
       // ),
       body: _pages[_selectedIndex],
+
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
+        selectedItemColor: Color.fromARGB(255, 251, 168, 97),
         onTap: (int index) {
           // Handle navigation to the selected page
           _onPageTapped(index, context);
         },
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -126,8 +139,16 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Statistics',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.add_circle_outline),
+            label: 'Add',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Calendar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Journal',
           ),
         ],
       ),

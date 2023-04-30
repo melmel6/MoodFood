@@ -35,7 +35,11 @@ class NutrientInfoBox extends StatelessWidget {
         children: [
           Text(
             'Nutrition Info',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 18,
+              fontFamily: 'Montserrat', // Add this
+              fontWeight: FontWeight.bold, // Add this
+            ),
           ),
           SizedBox(height: 10),
           Row(
@@ -44,33 +48,89 @@ class NutrientInfoBox extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Energy'),
+                  Text(
+                    'Energy',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                   SizedBox(height: 5),
-                  Text('$energy kcal'),
+                  Text(
+                    '$energy kcal',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Protein'),
+                  Text(
+                    'Protein',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                   SizedBox(height: 5),
-                  Text('$protein g'),
+                  Text(
+                    '$protein g',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Fat'),
+                  Text(
+                    'Fat',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                   SizedBox(height: 5),
-                  Text('$fat g'),
+                  Text(
+                    '$fat g',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Carbs'),
+                  Text(
+                    'Carbs',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                   SizedBox(height: 5),
-                  Text('$carbs g'),
+                  Text(
+                    '$carbs g',
+                    style: TextStyle(
+                      //fontSize: 12,
+                      fontFamily: 'Montserrat', // Add this
+                      fontWeight: FontWeight.normal, // Add this
+                    ),
+                  ),
                 ],
               ),
             ],
