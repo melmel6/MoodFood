@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mood_food/food_input_page.dart';
 import 'package:mood_food/mood_input_page.dart';
-import 'package:mood_food/radio_buttons.dart';
-import 'package:mood_food/food_input_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:mood_food/radio_buttons_mood.dart';
-import 'package:mood_food/view_mood_per_day.dart';
 
 class MoodInputTabs extends StatefulWidget {
   @override
