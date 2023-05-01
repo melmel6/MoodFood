@@ -17,23 +17,273 @@ import 'package:mood_food/UserProfilePage.dart';
 //import 'package:mood_food/AddPage.dart';
 import 'package:mood_food/StatisticsPage.dart';
 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 class JournalPage extends StatefulWidget {
   @override
   _JournalPageState createState() => _JournalPageState();
 }
 
 class _JournalPageState extends State<JournalPage> {
-  @override
+  final TextEditingController _controller1 = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
+  final TextEditingController _controller3 = TextEditingController();
+  int? _selectedValue;
+
+  final String _lastEntryDate = '1 May 2023 21:09';
+  final String _lastEntryAnswer1 = '5';
+  final String _lastEntryAnswer2 =
+      "I'm feeling stressed and overwhelmed from work today, and I'm using food as a way to soothe myself.";
+  final String _lastEntryAnswer3 =
+      'Yes, I had a really difficult project at work that I had to finish by the end of the day, and it was causing me anxiety.';
+
+
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 251, 168, 97),
         title: Text(
           'Journal',
-          style:
-              TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w200),
+          style: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.w200,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.calendar_today),
+                SizedBox(width: 8),
+                Text(
+                  DateFormat('MMMM d, y h:mm a').format(DateTime.now()),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 32),
+            Text(
+              'Reflect on your emotions and eating habits with this prompt:',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat',
+              ),
+            ),
+            SizedBox(height: 16),
+            _buildQuestionBox(
+              '1. How hungry are you on a scale from 1-10?',
+              DropdownButtonFormField<int>(
+                value: _selectedValue,
+                decoration: InputDecoration(
+                  hintText: 'Pick a value',
+                  contentPadding: EdgeInsets.all(16),
+                  border: OutlineInputBorder(),
+                ),
+                items: List.generate(
+                  10,
+                  (index) => DropdownMenuItem(
+                    value: index + 1,
+                    child: Text('${index + 1}'),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedValue = value;
+                    _controller1.text = _selectedValue!.toString();
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+            _buildQuestionBox(
+              '2. What emotions are you experiencing right now?',
+              TextField(
+                controller: _controller2,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(16),
+                  hintText: 'Answer here...',
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            _buildQuestionBox(
+              '3. Did you experience any stressful or triggering events today?',
+              TextField(
+                controller: _controller3,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(16),
+                  hintText: 'Answer here...',
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            SizedBox(height: 32),
+            _buildLastEntryHeader(),
+            SizedBox(height: 32),
+            _buildLastEntryBox(),
+          ],
         ),
       ),
     );
   }
-}
+
+
+    Widget _buildQuestionBox(String question, Widget inputWidget) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          question,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Montserrat',
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: inputWidget,
+        ),
+      ],
+    );
+  }
+
+
+   Widget _buildLastEntryHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Last Journal Entry',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Montserrat',
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              // Navigate to the view all entries page
+            },
+            child: Text(
+              'View all entries',
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+    Widget _buildLastEntryBox() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today),
+                SizedBox(width: 8),
+                Text(
+                  _lastEntryDate,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildAnswerBox('Answer 1:', _lastEntryAnswer1),
+                SizedBox(height: 16),
+                _buildAnswerBox('Answer 2:', _lastEntryAnswer2),
+                SizedBox(height: 16),
+                _buildAnswerBox('Answer 3:', _lastEntryAnswer3),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnswerBox(String question, String answer) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          question,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Montserrat',
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          answer,
+          style: TextStyle(
+            fontSize: 16,
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    );
+  }
+
+} 
