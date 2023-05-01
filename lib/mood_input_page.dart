@@ -19,7 +19,7 @@ class _MoodInputPageState extends State<MoodInputPage> {
   final List<Map<String, dynamic>> _moods = [
     {'label': 'Awful', 'emoji': '😞', 'color': Colors.red},
     {'label': 'Bad', 'emoji': '🙁', 'color': Colors.orange},
-    {'label': 'Meh', 'emoji': '😐', 'color': Colors.yellow},
+    {'label': 'Neutral', 'emoji': '😐', 'color': Colors.yellow},
     {'label': 'Good', 'emoji': '🙂', 'color': Colors.lightGreen},
     {'label': 'Super', 'emoji': '😊', 'color': Colors.green},
   ];
