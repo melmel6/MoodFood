@@ -17,7 +17,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 251, 168, 97),
+        //backgroundColor: Color.fromARGB(255, 255, 194, 140),
         title: Text(
           'User Profile',
           style:
@@ -56,13 +56,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       style: TextStyle(fontFamily: 'Montserrat'),
                     ),
                     style: OutlinedButton.styleFrom(
-                      primary: Color.fromARGB(255, 251, 168, 97),
+                      //primary: Color.fromARGB(255, 251, 168, 97),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       side: BorderSide(
                         width: 2,
-                        color: Color.fromARGB(255, 251, 168, 97),
+                        color: Color.fromARGB(255, 255, 180, 113),
                       ),
                     ),
                   ),

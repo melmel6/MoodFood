@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum Mood { awful, sad, meh, happy, amazing, none }
+enum Mood { awful, sad, neutral, happy, amazing, none }
 
 class TodaysInputsCard extends StatefulWidget {
   const TodaysInputsCard({
@@ -15,8 +14,6 @@ class TodaysInputsCard extends StatefulWidget {
 
   @override
   _TodaysInputsCardState createState() => _TodaysInputsCardState();
-
-  
 }
 
 class _TodaysInputsCardState extends State<TodaysInputsCard> {
@@ -28,7 +25,6 @@ class _TodaysInputsCardState extends State<TodaysInputsCard> {
   Mood? _NightMood = Mood.none;
 
   Future<List<Map<String, dynamic>>> getMoodInputs() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonDataFood = prefs.getString('moodInputs');
 
@@ -63,8 +59,6 @@ class _TodaysInputsCardState extends State<TodaysInputsCard> {
     getMoodInputs();
   }
 
-  
-
   static Future<List<Map<String, dynamic>>> getFoodInputs() async {
     String jsonData = await rootBundle.loadString('assets/fake_data.json');
     Map<String, dynamic> data = jsonDecode(jsonData);
@@ -78,38 +72,45 @@ class _TodaysInputsCardState extends State<TodaysInputsCard> {
     return todaysInputs;
   }
 
-Map<String, Mood> assignMoods(moodInputs) {
-  var morningMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Morning',
-          orElse: () => <String, dynamic>{});
-          
-  var afternoonMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Afternoon',
-          orElse: () => <String, dynamic>{});
+  Map<String, Mood> assignMoods(moodInputs) {
+    var morningMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Morning',
+        orElse: () => <String, dynamic>{});
 
-  var eveningMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Evening',
-          orElse: () => <String, dynamic>{});
+    var afternoonMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Afternoon',
+        orElse: () => <String, dynamic>{});
 
-  var nightMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Night',
-          orElse: () => <String, dynamic>{});
+    var eveningMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Evening',
+        orElse: () => <String, dynamic>{});
 
-  var morning = morningMoodData.isNotEmpty ? Mood.values[morningMoodData['mood']] : Mood.none;
-  var afternoon = afternoonMoodData.isNotEmpty ? Mood.values[afternoonMoodData['mood']] : Mood.none;
-  var evening = eveningMoodData.isNotEmpty ? Mood.values[eveningMoodData['mood']] : Mood.none;
-  var night = nightMoodData.isNotEmpty ? Mood.values[nightMoodData['mood']] : Mood.none;
-  
-  return {
-    'morning': morning,
-    'afternoon': afternoon,
-    'evening': evening,
-    'night': night
-  };
-}
+    var nightMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Night',
+        orElse: () => <String, dynamic>{});
 
+    var morning = morningMoodData.isNotEmpty
+        ? Mood.values[morningMoodData['mood']]
+        : Mood.none;
+    var afternoon = afternoonMoodData.isNotEmpty
+        ? Mood.values[afternoonMoodData['mood']]
+        : Mood.none;
+    var evening = eveningMoodData.isNotEmpty
+        ? Mood.values[eveningMoodData['mood']]
+        : Mood.none;
+    var night = nightMoodData.isNotEmpty
+        ? Mood.values[nightMoodData['mood']]
+        : Mood.none;
 
-@override
+    return {
+      'morning': morning,
+      'afternoon': afternoon,
+      'evening': evening,
+      'night': night
+    };
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -126,6 +127,9 @@ Map<String, Mood> assignMoods(moodInputs) {
               Text(
                 'Today\'s Moods',
                 style: TextStyle(
+                  //fontSize: 12,
+                  fontFamily: 'Montserrat', // Add this
+                  // fontWeight: FontWeight.normal,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -148,33 +152,66 @@ Map<String, Mood> assignMoods(moodInputs) {
     );
   }
 
-    Widget _buildMoodWidget(String title, String imagePath, Mood? mood) {
+  // Define a list of mood options with emojis and colors
+final List<Map<String, dynamic>> moodOptions = [
+  {'emoji': '😞', 'color': Colors.red},
+  {'emoji': '🙁', 'color': Colors.orange},
+  {'emoji': '😐', 'color': Colors.yellow},
+  {'emoji': '🙂', 'color': Colors.lightGreen},
+  {'emoji': '😊', 'color': Colors.green},
+];
+
+// Get the emoji and color for a given mood
+Map<String, dynamic> _getMoodEmoji(Mood? mood) {
+  if (mood == null) return {'emoji': '', 'color': Colors.grey};
+
+  switch (mood) {
+    case Mood.awful:
+      return moodOptions[0];
+    case Mood.sad:
+      return moodOptions[1];
+    case Mood.neutral:
+      return moodOptions[2];
+    case Mood.happy:
+      return moodOptions[3];
+    case Mood.amazing:
+      return moodOptions[4];
+    default:
+      return {'emoji': '', 'color': Colors.grey};
+  }
+}
+
+// Build a widget to display a mood option with an emoji and color
+Widget _buildMoodWidget(String title, Map<String, dynamic> moodOption, Mood? mood) {
   return Column(
     children: [
       Text(
         title,
         style: TextStyle(
-          fontSize: 16,
-        ),
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
+          ),
       ),
       SizedBox(height: 8),
-      SvgPicture.asset(
-        imagePath,
-        width: 40,
-        height: 40,
+      Text(
+        moodOption['emoji'],
+        style: TextStyle(fontSize: 40, color: moodOption['color']),
       ),
       SizedBox(height: 4),
       Text(
         _getMoodDescription(mood),
         style: TextStyle(
-          fontSize: 12,
-          color: Colors.grey[600],
-        ),
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
+          ),
       ),
     ],
   );
 }
-
 
 String _getMoodDescription(Mood? mood) {
   switch (mood) {
@@ -182,7 +219,7 @@ String _getMoodDescription(Mood? mood) {
       return 'Awful';
     case Mood.sad:
       return 'Bad';
-    case Mood.meh:
+    case Mood.neutral:
       return 'Neutral';
     case Mood.happy:
       return 'Good';
@@ -192,23 +229,5 @@ String _getMoodDescription(Mood? mood) {
       return '';
   }
 }
-
-
-  String _getMoodEmoji(Mood? mood) {
-    switch (mood) {
-      case Mood.awful:
-        return '/svg/awful.svg';
-      case Mood.sad:
-        return '/svg/sad.svg';
-      case Mood.meh:
-        return '/svg/meh.svg';
-      case Mood.happy:
-        return '/svg/happy.svg';
-      case Mood.amazing:
-        return '/svg/super.svg';
-      default:
-        return '';
-    }
-  }
 
 }

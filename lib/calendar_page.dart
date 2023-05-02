@@ -15,7 +15,9 @@ class CalendarPage extends StatefulWidget {
   _CalendarPageState createState() => _CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver { // Add the mixin
+class _CalendarPageState extends State<CalendarPage>
+    with WidgetsBindingObserver {
+  // Add the mixin
   Map<DateTime, List> _events = {}; // add this
 
   String _addLeadingZero(int number) {
@@ -77,6 +79,7 @@ class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //backgroundColor: Color.fromARGB(255, 255, 194, 140),
         title: Text(
           'Calendar',
           style: TextStyle(
@@ -166,7 +169,7 @@ class _CalendarPageState extends State<CalendarPage> with WidgetsBindingObserver
             Center(
               child: TodaysInputsCard(),
             ),
-            SizedBox(height:20),
+            SizedBox(height: 20),
             Center(
               child: TodaysFoodInputsCard(),
             ),
@@ -200,10 +203,20 @@ Widget _buildInfoContainer(
         SizedBox(height: 8),
         Text(
           title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Montserrat' ),
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Montserrat'),
         ),
         SizedBox(height: 8),
-        Text(info),
+        Text(
+          info,
+          style: TextStyle(
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal, // Add this
+          ),
+        ),
       ],
     ),
   );

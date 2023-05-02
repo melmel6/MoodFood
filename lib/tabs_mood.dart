@@ -19,14 +19,14 @@ class _MoodInputTabsState extends State<MoodInputTabs>
 
   void _handleSubmit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jsonDataMood= prefs.getString('moodInputs');
+    String? jsonDataMood = prefs.getString('moodInputs');
     List<dynamic> moodList = json.decode(jsonDataMood ?? '') ?? [];
 
     Map<String, dynamic> moodData = {
-        'moodTime': _selectedMoodTime,
-        'date': DateTime.now().toIso8601String(),
-        'mood': _selectedMood
-      };
+      'moodTime': _selectedMoodTime,
+      'date': DateTime.now().toIso8601String(),
+      'mood': _selectedMood
+    };
 
     moodList.add(moodData);
     await prefs.setString('moodInputs', json.encode(moodList));
@@ -34,24 +34,24 @@ class _MoodInputTabsState extends State<MoodInputTabs>
     _showSuccessDialog(context);
   }
 
-void _showSuccessDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 50,
-            ),
-            SizedBox(height: 20),
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 50,
+              ),
+              SizedBox(height: 20),
               Text(
                 'Success!',
                 style: TextStyle(
@@ -77,7 +77,8 @@ void _showSuccessDialog(BuildContext context) {
                 primary: Colors.white, // sets the button's background color
               ),
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
                 // Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               child: Text(
@@ -187,7 +188,14 @@ void _showSuccessDialog(BuildContext context) {
                         _tabController.animateTo(_currentTabIndex - 1);
                       });
                     },
-              child: Text('Back'),
+              child: Text(
+                'Back',
+                style: TextStyle(
+                  //fontSize: 12,
+                  fontFamily: 'Montserrat', // Add this
+                  fontWeight: FontWeight.normal, // Add this
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: _currentTabIndex == 0 && _selectedMoodTime == null
@@ -201,7 +209,14 @@ void _showSuccessDialog(BuildContext context) {
                                 _tabController.animateTo(_currentTabIndex + 1);
                               });
                             },
-              child: Text(_currentTabIndex == 1 ? 'Submit' : 'Next'),
+              child: Text(
+                _currentTabIndex == 1 ? 'Submit' : 'Next',
+                style: TextStyle(
+                  //fontSize: 12,
+                  fontFamily: 'Montserrat', // Add this
+                  fontWeight: FontWeight.normal, // Add this
+                ),
+              ),
             ),
           ],
         ),
