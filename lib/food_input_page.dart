@@ -131,7 +131,14 @@ class _FoodInputPageState extends State<FoodInputPage> {
                       .map<DropdownMenuItem<dynamic>>(
                           (food) => DropdownMenuItem<dynamic>(
                                 value: food,
-                                child: Text(food['label']),
+                                child: Text(
+                                  food['label'],
+                                  style: TextStyle(
+                                    //fontSize: 12,
+                                    fontFamily: 'Montserrat', // Add this
+                                    fontWeight: FontWeight.normal, // Add this
+                                  ),
+                                ),
                               ))
                       .toList(),
                   decoration: InputDecoration(
@@ -156,7 +163,14 @@ class _FoodInputPageState extends State<FoodInputPage> {
                       .map<DropdownMenuItem<dynamic>>(
                           (measure) => DropdownMenuItem<dynamic>(
                                 value: measure,
-                                child: Text(measure['label']),
+                                child: Text(
+                                  measure['label'],
+                                  style: TextStyle(
+                                    //fontSize: 12,
+                                    fontFamily: 'Montserrat', // Add this
+                                    fontWeight: FontWeight.normal, // Add this
+                                  ),
+                                ),
                               ))
                       .toList(),
                   decoration: InputDecoration(
@@ -244,7 +258,11 @@ class CustomBadge extends StatelessWidget {
           SizedBox(width: 5),
           Text(
             'g',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+                //fontSize: 12,
+                fontFamily: 'Montserrat', // Add this
+                fontWeight: FontWeight.normal, // Add this
+                color: Colors.white),
           ),
         ],
       ),
