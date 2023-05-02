@@ -132,14 +132,15 @@ Map<String, Mood> assignMoods(moodInputs) {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildMoodWidget('Morning', _getMoodEmoji(_MorningMood)),
-                  _buildMoodWidget('Afternoon', _getMoodEmoji(_AfternoonMood)),
-                  _buildMoodWidget('Evening', _getMoodEmoji(_EveningMood)),
-                  _buildMoodWidget('Night', _getMoodEmoji(_NightMood)),
-                ],
-              ),
+  mainAxisAlignment: MainAxisAlignment.spaceAround,
+  children: [
+    _buildMoodWidget('Morning', _getMoodEmoji(_MorningMood), _MorningMood),
+    _buildMoodWidget('Afternoon', _getMoodEmoji(_AfternoonMood), _AfternoonMood),
+    _buildMoodWidget('Evening', _getMoodEmoji(_EveningMood), _EveningMood),
+    _buildMoodWidget('Night', _getMoodEmoji(_NightMood), _NightMood),
+  ],
+),
+
             ],
           ),
         ),
@@ -147,24 +148,51 @@ Map<String, Mood> assignMoods(moodInputs) {
     );
   }
 
-    Widget _buildMoodWidget(String title, String imagePath) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-          ),
+    Widget _buildMoodWidget(String title, String imagePath, Mood? mood) {
+  return Column(
+    children: [
+      Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
         ),
-        SizedBox(height: 8),
-        SvgPicture.asset(
-          imagePath,
-          width: 40,
-          height: 40,
+      ),
+      SizedBox(height: 8),
+      SvgPicture.asset(
+        imagePath,
+        width: 40,
+        height: 40,
+      ),
+      SizedBox(height: 4),
+      Text(
+        _getMoodDescription(mood),
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.grey[600],
         ),
-      ],
-    );
+      ),
+    ],
+  );
+}
+
+
+String _getMoodDescription(Mood? mood) {
+  switch (mood) {
+    case Mood.awful:
+      return 'Awful';
+    case Mood.sad:
+      return 'Bad';
+    case Mood.meh:
+      return 'Neutral';
+    case Mood.happy:
+      return 'Good';
+    case Mood.amazing:
+      return 'Super';
+    default:
+      return '';
   }
+}
+
 
   String _getMoodEmoji(Mood? mood) {
     switch (mood) {

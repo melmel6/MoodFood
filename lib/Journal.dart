@@ -118,10 +118,10 @@ Widget _buildGridView() {
           ),
         ),
       ),
-      body: Column(
+      body:
+       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _buildGridView()),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Expanded(
@@ -238,8 +238,8 @@ Widget _buildInfoContainer({
   required String info3,
 }) {
   return Container(
-    margin: EdgeInsets.symmetric(vertical: 4),
-    padding: EdgeInsets.all(4),
+    margin: EdgeInsets.symmetric(vertical: 1),
+    padding: EdgeInsets.all(1),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       boxShadow: [

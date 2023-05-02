@@ -634,57 +634,69 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
 
 
-  Widget _buildInfoContainer1(String title, IconData icon, String count) {
-    return Container(
-      width: 250,
-      height: 120,
-      margin: EdgeInsets.symmetric(vertical: 8),
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 25,
+ Widget _buildInfoContainer1(String title, IconData icon, String count, IconData arrowIcon, Color arrowColor) {
+  return Container(
+    width: 250,
+    height: 120,
+    margin: EdgeInsets.symmetric(vertical: 8),
+    padding: EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 5,
+          offset: Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          size: 25,
+          color: Colors.grey[700],
+        ),
+        SizedBox(height: 4),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 12,
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.normal,
             color: Colors.grey[700],
           ),
-          SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: 'Montserrat', // Add this
-              fontWeight: FontWeight.normal, // Add this
-              color: Colors.grey[700],
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(arrowIcon, size: 20.0, color: arrowColor),
+            SizedBox(width: 4.0),
+            Text(
+              count,
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 117, 75),
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 4),
-          Text(
-            count,
-            style: TextStyle(
-              fontSize: 15,
-              fontFamily: 'Montserrat', // Add this
-              fontWeight: FontWeight.bold, // Add this
-              color: Color.fromARGB(255, 255, 117, 75),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
+
+
+
 
   Widget _buildInfoContainer(String title1, String title2, String title3,
       IconData icon, String count1, String count2) {
@@ -865,20 +877,20 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  Widget _buildSummaryStats() {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 8.0,
-      children: [
-        _buildInfoContainer(' Average Kcal input', 'Overall:', 'This week:',
-            Icons.local_dining, '2132', '3011'),
-        _buildInfoContainer('Average mood ', 'Overall:', 'This week:',
-            Icons.mood, '3.1', '1.8'),
-        _buildInfoContainer1('Your average emotional score fluctuation:',
-            Icons.stacked_line_chart, '12%'),
-      ],
-    );
-  }
+Widget _buildSummaryStats() {
+  return Wrap(
+    alignment: WrapAlignment.center,
+    spacing: 8.0,
+    children: [
+      _buildInfoContainer(' Average Kcal input', 'Overall:', 'This week:',
+          Icons.local_dining, '2132', '3011'),
+      _buildInfoContainer('Average mood ', 'Overall:', 'This week:',
+          Icons.mood, '3.1', '1.8'),
+      _buildInfoContainer1('Weekly average emotional eating score status:',
+          Icons.stacked_line_chart, '12%', Icons.arrow_upward, Colors.red),
+    ],
+  );
+}
 
   void changeMonth() {
     final selectedDateTime = DateTime(2023, _selectedMonth);
