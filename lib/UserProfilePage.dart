@@ -44,7 +44,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
-                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80'),
                   ),
                   OutlinedButton.icon(
                     onPressed: () {

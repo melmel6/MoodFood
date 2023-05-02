@@ -243,7 +243,7 @@ class CustomBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.pinkAccent,
+        color: Colors.greenAccent,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(

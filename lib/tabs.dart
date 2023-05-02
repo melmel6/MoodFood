@@ -187,7 +187,7 @@ class _FoodInputTabsState extends State<FoodInputTabs>
                                   fontFamily: 'Montserrat', // Add this
                                   //fontWeight: FontWeight.normal, // Add this
 
-                                  color: Colors.pink,
+                                  color: Colors.green,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
