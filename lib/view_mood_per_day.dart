@@ -6,7 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum Mood { awful, sad, meh, happy, amazing, none }
+enum Mood { awful, sad, neutral, happy, amazing, none }
 
 class TodaysInputsCard extends StatefulWidget {
   const TodaysInputsCard({
@@ -147,40 +147,91 @@ Map<String, Mood> assignMoods(moodInputs) {
     );
   }
 
-    Widget _buildMoodWidget(String title, String imagePath) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        SizedBox(height: 8),
-        SvgPicture.asset(
-          imagePath,
-          width: 40,
-          height: 40,
-        ),
-      ],
-    );
-  }
+  //   Widget _buildMoodWidget(String title, String imagePath) {
+  //   return Column(
+  //     children: [
+  //       Text(
+  //         title,
+  //         style: TextStyle(
+  //           fontSize: 16,
+  //         ),
+  //       ),
+  //       SizedBox(height: 8),
+  //       SvgPicture.asset(
+  //         imagePath,
+  //         width: 40,
+  //         height: 40,
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  String _getMoodEmoji(Mood? mood) {
-    switch (mood) {
-      case Mood.awful:
-        return '/svg/awful.svg';
-      case Mood.sad:
-        return '/svg/sad.svg';
-      case Mood.meh:
-        return '/svg/meh.svg';
-      case Mood.happy:
-        return '/svg/happy.svg';
-      case Mood.amazing:
-        return '/svg/super.svg';
-      default:
-        return '';
-    }
+  // String _getMoodEmoji(Mood? mood) {
+  //   switch (mood) {
+  //     case Mood.awful:
+  //       return '/svg/1.svg';
+  //     case Mood.sad:
+  //       return '/svg/2.svg';
+  //     case Mood.neutral:
+  //       return '/svg/3.svg';
+  //     case Mood.happy:
+  //       return '/svg/4.svg';
+  //     case Mood.amazing:
+  //       return '/svg/5.svg';
+  //     default:
+  //       return '';
+  //   }
+  // }
+
+  // Define a list of mood options with emojis and colors
+final List<Map<String, dynamic>> moodOptions = [
+  {'emoji': '😞', 'color': Colors.red},
+  {'emoji': '🙁', 'color': Colors.orange},
+  {'emoji': '😐', 'color': Colors.yellow},
+  {'emoji': '🙂', 'color': Colors.lightGreen},
+  {'emoji': '😊', 'color': Colors.green},
+];
+
+// Get the emoji and color for a given mood
+Map<String, dynamic> _getMoodEmoji(Mood? mood) {
+  if (mood == null) return {'emoji': '', 'color': Colors.grey};
+
+  switch (mood) {
+    case Mood.awful:
+      return moodOptions[0];
+    case Mood.sad:
+      return moodOptions[1];
+    case Mood.neutral:
+      return moodOptions[2];
+    case Mood.happy:
+      return moodOptions[3];
+    case Mood.amazing:
+      return moodOptions[4];
+    default:
+      return {'emoji': '', 'color': Colors.grey};
   }
+}
+
+// Build a widget to display a mood option with an emoji and color
+Widget _buildMoodWidget(String title, Map<String, dynamic> moodOption) {
+  return Column(
+    children: [
+      Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+        ),
+      ),
+      SizedBox(height: 8),
+      Text(
+        moodOption['emoji'],
+        style: TextStyle(
+          fontSize: 40,
+          color: moodOption['color'],
+        ),
+      ),
+    ],
+  );
+}
 
 }

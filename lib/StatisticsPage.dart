@@ -59,7 +59,7 @@ class MoodTickFormatter {
       case 1:
         return 'Sad';
       case 2:
-        return 'Meh';
+        return 'Neutral';
       case 3:
         return 'Happy';
       case 4:
@@ -636,7 +636,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget _buildInfoContainer1(String title, IconData icon, String count) {
     return Container(
-      width: 250,
+      width: 230,
       height: 120,
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(8),
@@ -689,7 +689,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _buildInfoContainer(String title1, String title2, String title3,
       IconData icon, String count1, String count2) {
     return Container(
-      width: 250,
+      width: 230,
       height: 120,
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(8),
@@ -883,7 +883,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   void changeMonth() {
     final selectedDateTime = DateTime(2023, _selectedMonth);
     final selectedMonth = DateFormat('MMMM').format(selectedDateTime);
-    print('Selected Month: $selectedMonth');
+    // print('Selected Month: $selectedMonth');
 
     _calculateAverageFoodPerTimeOfDay(_dataFood, _selectedMonth);
     _calculateAverageFoodPerDay(_dataFood, _selectedMonth);
@@ -1019,7 +1019,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       _buildTitleWithInfoIcon(context, "Mood-based Food Categories", "Our heatmap can help you see if your mood affects the types of food you eat. The chart shows different food types on the right side and moods on the bottom. You'll see lots of colored squares on the chart. Red squares mean you ate more of a food type during that particular mood. So, for example, the more close to red a square is in the 'sad' column of the 'fat' row, that means the more you tended to eat high-fat foods when you were feeling sad."),
                       SizedBox(height: 16),
                       Image.asset(
-                        '/heatmap.png',
+                        '/heatmap_grams.png',
                         width: 750,
                         fit: BoxFit.cover,
                       ),

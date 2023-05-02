@@ -32,9 +32,6 @@ class _TodaysFoodInputsCardState extends State<TodaysFoodInputsCard> {
         .toList()
         .cast<Map<String, dynamic>>();
 
-    print("TODAY FOOD");
-    print(todaysInputs);
-
     setState(() {});
   }
 
