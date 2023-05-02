@@ -83,6 +83,10 @@ class _MoodInputPageState extends State<MoodInputPage> {
                                   child: Text(
                                     mood['emoji'] as String,
                                     style: TextStyle(
+                                      //fontSize: 12,
+                                      fontFamily: 'Montserrat', // Add this
+                                      fontWeight: FontWeight.normal, // Add this
+
                                       fontSize: isSelected ? 56.0 : 48.0,
                                       color: mood['color'] as Color,
                                     ),
@@ -92,6 +96,10 @@ class _MoodInputPageState extends State<MoodInputPage> {
                                 Text(
                                   mood['label'] as String,
                                   style: TextStyle(
+                                    //fontSize: 12,
+                                    fontFamily: 'Montserrat', // Add this
+                                    fontWeight: FontWeight.normal, // Add this
+
                                     fontSize: isSelected ? 18.0 : 16.0,
                                     color: mood['color'] as Color,
                                   ),

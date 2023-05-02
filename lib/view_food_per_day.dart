@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -58,6 +57,10 @@ class _TodaysFoodInputsCardState extends State<TodaysFoodInputsCard> {
               Text(
                 'Today\'s Food',
                 style: TextStyle(
+                  //fontSize: 12,
+                  fontFamily: 'Montserrat', // Add this
+                  //fontWeight: FontWeight.normal, // Add this
+
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -99,8 +102,20 @@ class InputItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(input['label']),
-      subtitle: Text('${input['measure']} (${input['weight']} g)'),
+      title: Text(
+        input['label'],
+        style: TextStyle(
+          //fontSize: 12,
+          fontFamily: 'Montserrat', // Add this
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      subtitle: Text('${input['measure']} (${input['weight']} g)',
+          style: TextStyle(
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal,
+          )),
       trailing: Container(
         width: 500,
         child: Table(
@@ -114,19 +129,44 @@ class InputItem extends StatelessWidget {
           children: [
             TableRow(children: [
               FaIcon(FontAwesomeIcons.clock, size: 14),
-              Text(input['mealTime']),
+              Text(input['mealTime'],
+                  style: TextStyle(
+                    //fontSize: 12,
+                    fontFamily: 'Montserrat', // Add this
+                    fontWeight: FontWeight.normal,
+                  )),
               FaIcon(FontAwesomeIcons.dumbbell, size: 14),
-              Text('Protein: ${input['nutrientInfo']['protein']} g'),
+              Text('Protein: ${input['nutrientInfo']['protein']} g',
+                  style: TextStyle(
+                    //fontSize: 12,
+                    fontFamily: 'Montserrat', // Add this
+                    fontWeight: FontWeight.normal,
+                  )),
               Icon(Icons.fastfood, size: 14),
-              Text('   Fat: ${input['nutrientInfo']['fat']} g'),
+              Text('   Fat: ${input['nutrientInfo']['fat']} g',
+                  style: TextStyle(
+                    //fontSize: 12,
+                    fontFamily: 'Montserrat', // Add this
+                    fontWeight: FontWeight.normal,
+                  )),
             ]),
             TableRow(children: [
               SizedBox(width: 0),
               SizedBox(width: 0),
               FaIcon(FontAwesomeIcons.wheatAwn, size: 14),
-              Text('Carbs: ${input['nutrientInfo']['carbs']} g'),
+              Text('Carbs: ${input['nutrientInfo']['carbs']} g',
+                  style: TextStyle(
+                    //fontSize: 12,
+                    fontFamily: 'Montserrat', // Add this
+                    fontWeight: FontWeight.normal,
+                  )),
               Icon(Icons.local_fire_department, size: 14),
-              Text('   Energy: ${input['nutrientInfo']['energy']} kcal'),
+              Text('   Energy: ${input['nutrientInfo']['energy']} kcal',
+                  style: TextStyle(
+                    //fontSize: 12,
+                    fontFamily: 'Montserrat', // Add this
+                    fontWeight: FontWeight.normal,
+                  )),
             ]),
           ],
         ),

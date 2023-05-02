@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -15,8 +14,6 @@ class TodaysInputsCard extends StatefulWidget {
 
   @override
   _TodaysInputsCardState createState() => _TodaysInputsCardState();
-
-  
 }
 
 class _TodaysInputsCardState extends State<TodaysInputsCard> {
@@ -28,7 +25,6 @@ class _TodaysInputsCardState extends State<TodaysInputsCard> {
   Mood? _NightMood = Mood.none;
 
   Future<List<Map<String, dynamic>>> getMoodInputs() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonDataFood = prefs.getString('moodInputs');
 
@@ -63,8 +59,6 @@ class _TodaysInputsCardState extends State<TodaysInputsCard> {
     getMoodInputs();
   }
 
-  
-
   static Future<List<Map<String, dynamic>>> getFoodInputs() async {
     String jsonData = await rootBundle.loadString('assets/fake_data.json');
     Map<String, dynamic> data = jsonDecode(jsonData);
@@ -78,38 +72,45 @@ class _TodaysInputsCardState extends State<TodaysInputsCard> {
     return todaysInputs;
   }
 
-Map<String, Mood> assignMoods(moodInputs) {
-  var morningMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Morning',
-          orElse: () => <String, dynamic>{});
-          
-  var afternoonMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Afternoon',
-          orElse: () => <String, dynamic>{});
+  Map<String, Mood> assignMoods(moodInputs) {
+    var morningMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Morning',
+        orElse: () => <String, dynamic>{});
 
-  var eveningMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Evening',
-          orElse: () => <String, dynamic>{});
+    var afternoonMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Afternoon',
+        orElse: () => <String, dynamic>{});
 
-  var nightMoodData =
-      moodInputs.firstWhere((input) => input['moodTime'] == 'Night',
-          orElse: () => <String, dynamic>{});
+    var eveningMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Evening',
+        orElse: () => <String, dynamic>{});
 
-  var morning = morningMoodData.isNotEmpty ? Mood.values[morningMoodData['mood']] : Mood.none;
-  var afternoon = afternoonMoodData.isNotEmpty ? Mood.values[afternoonMoodData['mood']] : Mood.none;
-  var evening = eveningMoodData.isNotEmpty ? Mood.values[eveningMoodData['mood']] : Mood.none;
-  var night = nightMoodData.isNotEmpty ? Mood.values[nightMoodData['mood']] : Mood.none;
-  
-  return {
-    'morning': morning,
-    'afternoon': afternoon,
-    'evening': evening,
-    'night': night
-  };
-}
+    var nightMoodData = moodInputs.firstWhere(
+        (input) => input['moodTime'] == 'Night',
+        orElse: () => <String, dynamic>{});
 
+    var morning = morningMoodData.isNotEmpty
+        ? Mood.values[morningMoodData['mood']]
+        : Mood.none;
+    var afternoon = afternoonMoodData.isNotEmpty
+        ? Mood.values[afternoonMoodData['mood']]
+        : Mood.none;
+    var evening = eveningMoodData.isNotEmpty
+        ? Mood.values[eveningMoodData['mood']]
+        : Mood.none;
+    var night = nightMoodData.isNotEmpty
+        ? Mood.values[nightMoodData['mood']]
+        : Mood.none;
 
-@override
+    return {
+      'morning': morning,
+      'afternoon': afternoon,
+      'evening': evening,
+      'night': night
+    };
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -126,6 +127,9 @@ Map<String, Mood> assignMoods(moodInputs) {
               Text(
                 'Today\'s Moods',
                 style: TextStyle(
+                  //fontSize: 12,
+                  fontFamily: 'Montserrat', // Add this
+                  // fontWeight: FontWeight.normal,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -218,9 +222,12 @@ Widget _buildMoodWidget(String title, Map<String, dynamic> moodOption) {
     children: [
       Text(
         title,
-        style: TextStyle(
-          fontSize: 16,
-        ),
+          style: TextStyle(
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
+          ),
       ),
       SizedBox(height: 8),
       Text(

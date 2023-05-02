@@ -25,24 +25,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FoodMood',
+      home: const MyHomePage(title: 'MoodFood'),
       theme: ThemeData(
         primarySwatch: MaterialColor(
-          0xFBA861, // Primary color value
+          0xFFFDB9A3, // Primary color value
           <int, Color>{
             50: Color(0xFFFFF6E5),
             100: Color(0xFFFFE9C5),
             200: Color(0xFFFFDBA4),
             300: Color(0xFFFFCD82),
             400: Color(0xFFFFC075),
-            500: Color(0xFFFBBA61),
-            600: Color(0xFFF7B255),
+            500: Color(0xFFFDB9A3),
+            600: Color.fromARGB(255, 255, 195, 121),
             700: Color(0xFFF3AD4A),
             800: Color(0xFFEFA840),
             900: Color(0xFFE99A2D),
           },
         ),
       ),
-      home: const MyHomePage(title: 'MoodFood'),
     );
   }
 }
@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 251, 168, 97),
+        //selectedItemColor: ,
         onTap: (int index) {
           if (index == 2) {
             // Open overlay for adding new content
@@ -144,7 +144,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     ListTile(
                       leading: Icon(Icons.fastfood_outlined),
-                      title: Text('Input a meal'),
+                      title: Text(
+                        'Input a meal',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w200,
+                        ),
+                      ),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -156,7 +162,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     ListTile(
                       leading: Icon(Icons.emoji_emotions_outlined),
-                      title: Text('Input your mood'),
+                      title: Text(
+                        'Input your mood',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w200,
+                        ),
+                      ),
                       onTap: () {
                         Navigator.push(
                           context,

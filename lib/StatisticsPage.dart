@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:charts_common/common.dart' as charts_common;
 
-
 class FoodData {
   final String hour;
   final double foodScore;
@@ -35,7 +34,8 @@ class CustomNumericTickFormatterSpec extends charts.NumericTickFormatterSpec {
   CustomNumericTickFormatterSpec(this.formatter);
 
   @override
-  charts_common.TickFormatter<num> createTickFormatter(charts_common.ChartContext context) {
+  charts_common.TickFormatter<num> createTickFormatter(
+      charts_common.ChartContext context) {
     return _CustomNumericTickFormatter(formatter);
   }
 }
@@ -46,7 +46,8 @@ class _CustomNumericTickFormatter extends charts_common.TickFormatter<num> {
   _CustomNumericTickFormatter(this.formatter);
 
   @override
-  List<String> format(List<num> values, Map<num, String> cache, {num? stepSize}) {
+  List<String> format(List<num> values, Map<num, String> cache,
+      {num? stepSize}) {
     return values.map(formatter).toList();
   }
 }
@@ -69,8 +70,6 @@ class MoodTickFormatter {
     }
   }
 }
-
-
 
 class StatisticsPage extends StatefulWidget {
   @override
@@ -130,7 +129,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
             //color: isSelected ? Colors.grey : Colors.white,
           ),
         ),
-        content: Text(content),
+        content: Text(
+          content,
+          style: TextStyle(
+            //fontSize: 12,
+            fontFamily: 'Montserrat', // Add this
+            fontWeight: FontWeight.normal, // Add this
+          ),
+        ),
         actions: [
           TextButton(
             child: Text(
@@ -228,14 +234,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   void _calculateAverageFoodPerMonth(List<dynamic> data, int month) {
     List<FoodData> foodData = [];
-   
+
     // Filter the data to only include items for the specified month
     List<dynamic> monthData = data.where((item) {
       DateTime date = DateTime.parse(item['date']);
       return date.month == month;
     }).toList();
-
-    
 
     // Initialize an empty list to keep track of food scores for each day of the month
     List<List<int>> foodScoresForDayOfMonth = List.generate(31, (_) => []);
@@ -258,7 +262,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       String dayOfMonthString = (i + 1).toString();
       foodData.add(FoodData(dayOfMonthString, averageFoodScoreForDay));
     }
-    
+
     setState(() {
       _foodDataMonth = foodData;
     });
@@ -299,7 +303,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
     setState(() {
       _foodDataDay = foodData;
     });
-    
   }
 
   void _calculateAverageMoodPerMonth(List<dynamic> data, int month) {
@@ -332,7 +335,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       String dayOfMonthString = (i + 1).toString();
       moodData.add(MoodData(dayOfMonthString, averageFoodScoreForDay));
     }
-    
+
     setState(() {
       _moodDataMonth = moodData;
     });
@@ -381,10 +384,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
       moodData.add(MoodData(timeOfDay, averageMoodScore));
     });
 
-     setState(() {
+    setState(() {
       _moodDataHour = moodData;
     });
-    
   }
 
   void _calculateAverageMoodPerDay(List<dynamic> data, int month) {
@@ -419,8 +421,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
       moodData.add(MoodData(dayOfWeekString, averageMoodScoreForDay));
     }
 
-     setState(() {
-       _moodDataDay = moodData;
+    setState(() {
+      _moodDataDay = moodData;
     });
   }
 
@@ -486,16 +488,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
   List<charts.Series<MoodData, String>> _createDataMonthMood() {
     return [
       charts.Series<MoodData, String>(
-        id: 'Food',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+          id: 'Food',
+          colorFn: (_, __) => charts.ColorUtil.fromDartColor(
                 Color.fromARGB(255, 241, 134, 110), // peachy pink color
               ),
-        domainFn: (MoodData data, _) => data.hour,
-        measureFn: (MoodData data, _) => data.moodScore,
-        data: _moodDataMonth,
-         labelAccessorFn: (MoodData data, _) =>
-              data.moodScore != 0.0 ? scoreToEmoji(data.moodScore) : ''
-      ),
+          domainFn: (MoodData data, _) => data.hour,
+          measureFn: (MoodData data, _) => data.moodScore,
+          data: _moodDataMonth,
+          labelAccessorFn: (MoodData data, _) =>
+              data.moodScore != 0.0 ? scoreToEmoji(data.moodScore) : ''),
     ];
   }
 
@@ -562,7 +563,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
       return '😂'; // Unicode emoji for laugh beam
     }
   }
-
 
   List<charts.Series<MoodData, String>> _createDataHourMood() {
     return [
@@ -631,8 +631,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
       highlightColor: Colors.transparent,
     );
   }
-
-
 
   Widget _buildInfoContainer1(String title, IconData icon, String count) {
     return Container(
@@ -791,17 +789,17 @@ class _StatisticsPageState extends State<StatisticsPage> {
   }
 
   List<charts.Series<dynamic, String>> _getChartData(bool isMood) {
-  switch (_isDaySelected) {
-    case 0:
-      return isMood ? _createDataHourMood() : _createDataHourFood();
-    case 1:
-      return isMood ? _createDataDayMood() : _createDataDayFood();
-    case 2:
-      return isMood ? _createDataMonthMood() : _createDataMonthFood();
-    default:
-      return [];
+    switch (_isDaySelected) {
+      case 0:
+        return isMood ? _createDataHourMood() : _createDataHourFood();
+      case 1:
+        return isMood ? _createDataDayMood() : _createDataDayFood();
+      case 2:
+        return isMood ? _createDataMonthMood() : _createDataMonthFood();
+      default:
+        return [];
+    }
   }
-}
 
   Widget _buildChart(isMood) {
     return charts.BarChart(
@@ -843,7 +841,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
       //   ),
       // ),
       primaryMeasureAxis: charts.NumericAxisSpec(
-        tickFormatterSpec: isMood ? CustomNumericTickFormatterSpec(MoodTickFormatter().format) : null,
+        tickFormatterSpec: isMood
+            ? CustomNumericTickFormatterSpec(MoodTickFormatter().format)
+            : null,
         renderSpec: charts.GridlineRendererSpec(
           lineStyle: charts.LineStyleSpec(
             color: charts.ColorUtil.fromDartColor(Colors.grey),
@@ -898,12 +898,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //backgroundColor: Color.fromARGB(255, 255, 194, 140),
         title: Text('Statistics',
-        style: TextStyle(
+            style: TextStyle(
               fontFamily: 'Montserrat', // Add this
               fontWeight: FontWeight.normal, // Add this
             )),
-        
       ),
       backgroundColor: Colors.grey[200], // Add a background color
       body: SingleChildScrollView(
@@ -924,7 +924,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      _buildTitleWithInfoIcon(context, 'Your mood', 'This is some information about the charts.'),
+                      _buildTitleWithInfoIcon(
+                          context,
+                          'Food Intake and Mood Comparison',
+                          "Our multichart is a tool that shows you two different graphs at the same time. One graph shows you how many calories you're eating over time, and the other graph shows you how your mood is changing over time. By looking at these two graphs together, you can see if there are any patterns where your mood changes seem to match up with changes in your calorie intake. For example, if you notice that you tend to eat more when you're feeling sad or stressed, this could be a pattern of emotional eating. "),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -943,6 +946,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                 DateFormat('MMMM yyyy')
                                     .format(DateTime(2023, _selectedMonth)),
                                 style: TextStyle(
+                                  //fontSize: 12,
+                                  fontFamily: 'Montserrat', // Add this
+                                  //fontWeight: FontWeight.normal, // Add this
+
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -961,14 +968,18 @@ class _StatisticsPageState extends State<StatisticsPage> {
                           _buildToggleButton(_isDaySelected),
                         ],
                       ),
-                  
+                      Text('Food calories (kcal) by time',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat', // Add this
+                            fontWeight: FontWeight.normal, // Add this
+                          )),
                       SizedBox(height: 20),
                       Center(
                         child: Container(
                           width: 750,
                           height: 400,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Color.fromARGB(255, 248, 248, 248),
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: [
                               BoxShadow(
@@ -982,12 +993,18 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         ),
                       ),
                       SizedBox(height: 20),
+                      Text('Mood by time',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat', // Add this
+                            fontWeight: FontWeight.normal, // Add this
+                          )),
+                      SizedBox(height: 20),
                       Center(
                         child: Container(
                           width: 750,
                           height: 400,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Color.fromARGB(255, 248, 248, 248),
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: [
                               BoxShadow(
@@ -1016,7 +1033,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTitleWithInfoIcon(context, "Mood-based Food Categories", "Our heatmap can help you see if your mood affects the types of food you eat. The chart shows different food types on the right side and moods on the bottom. You'll see lots of colored squares on the chart. Red squares mean you ate more of a food type during that particular mood. So, for example, the more close to red a square is in the 'sad' column of the 'fat' row, that means the more you tended to eat high-fat foods when you were feeling sad."),
+                      _buildTitleWithInfoIcon(
+                          context,
+                          "Mood-based Food Categories",
+                          "Our heatmap can help you see if your mood affects the types of food you eat. The chart shows different food types on the right side and moods on the bottom. You'll see lots of colored squares on the chart. Red squares mean you ate more of a food type during that particular mood. So, for example, the more close to red a square is in the 'sad' column of the 'fat' row, that means the more you tended to eat high-fat foods when you were feeling sad."),
                       SizedBox(height: 16),
                       Image.asset(
                         '/heatmap_grams.png',
@@ -1034,4 +1054,3 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 }
-

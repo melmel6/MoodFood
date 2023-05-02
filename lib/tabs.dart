@@ -26,7 +26,6 @@ class _FoodInputTabsState extends State<FoodInputTabs>
     String? jsonDataFood = prefs.getString('foodInputs');
     List<dynamic> foodList = json.decode(jsonDataFood ?? '') ?? [];
 
-
     for (var meal in _selectedMeals) {
       Map<String, dynamic> nutrientData = {
         'mealTime': _selectedMealTime,
@@ -95,8 +94,8 @@ class _FoodInputTabsState extends State<FoodInputTabs>
               ),
               onPressed: () {
                 // Navigator.popUntil(context, ModalRoute.withName('/'));
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
               },
               child: Text(
                 'OK',
@@ -184,6 +183,10 @@ class _FoodInputTabsState extends State<FoodInputTabs>
                               child: Text(
                                 _selectedMeals.length.toString(),
                                 style: TextStyle(
+                                  //fontSize: 12,
+                                  fontFamily: 'Montserrat', // Add this
+                                  //fontWeight: FontWeight.normal, // Add this
+
                                   color: Colors.pink,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
