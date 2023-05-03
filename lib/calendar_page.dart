@@ -81,11 +81,12 @@ class _CalendarPageState extends State<CalendarPage>
       appBar: AppBar(
         //backgroundColor: Color.fromARGB(255, 255, 194, 140),
         title: Text(
-          'Calendar',
+          'MoodFood',
           style: TextStyle(
             //fontSize: 12,
             fontFamily: 'Montserrat', // Add this
-            fontWeight: FontWeight.normal, // Add this
+            fontWeight: FontWeight.bold, // Add this
+            color: Colors.white
           ),
         ),
       ),

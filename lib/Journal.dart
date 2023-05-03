@@ -479,7 +479,7 @@ class _JournalPageState extends State<JournalPage> {
   final TextEditingController _controller3 = TextEditingController();
   int? _selectedValue;
 
-  final String _lastEntryDate = '1 May 2023 21:09';
+  final String _lastEntryDate = '2 May 2023 21:09';
   final String _lastEntryAnswer1 = '5';
   final String _lastEntryAnswer2 =
       "I'm feeling stressed and overwhelmed from work today, and I'm using food as a way to soothe myself.";
@@ -558,10 +558,11 @@ class _JournalPageState extends State<JournalPage> {
       appBar: AppBar(
         //backgroundColor: Color.fromARGB(255, 255, 194, 140),
         title: Text(
-          'Journal',
+          'MoodFood',
           style: TextStyle(
             fontFamily: 'Montserrat',
-            fontWeight: FontWeight.w200,
+            color: Colors.white,
+            fontWeight: FontWeight.bold, // Add this
           ),
         ),
       ),

@@ -911,7 +911,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       ),
     );
   }
-  
+
   // Widget _buildInfoContainer1(String title, IconData icon, String count) {
   //   return Container(
   //     width: 230,
@@ -1194,10 +1194,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
     return Scaffold(
       appBar: AppBar(
         //backgroundColor: Color.fromARGB(255, 255, 194, 140),
-        title: Text('Statistics',
+        title: Text('Moodfood',
             style: TextStyle(
               fontFamily: 'Montserrat', // Add this
-              fontWeight: FontWeight.normal, // Add this
+               color: Colors.white,
+              fontWeight: FontWeight.bold, // Add this
             )),
       ),
       backgroundColor: Colors.grey[200], // Add a background color
@@ -1333,7 +1334,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                           _buildTitleWithInfoIcon(
                           context,
                           'Emotional Eating Score',
-                          "bla bla "),
+                          "The emotional eating score is a number that measures the relationship between a person's mood and their food intake. To calculate this score, the app groups the person's mood data and food intake data by either date or week (depending on whether the user has selected to view data for the last week or all time)."),
                          _buildToggleButton2(_showWeekly, "Show Weekly Data")
                         ],
                       ),

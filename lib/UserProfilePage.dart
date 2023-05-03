@@ -19,9 +19,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
       appBar: AppBar(
         //backgroundColor: Color.fromARGB(255, 255, 194, 140),
         title: Text(
-          'User Profile',
+          'MoodFood',
           style:
-              TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w200),
+              TextStyle(fontFamily: 'Montserrat', 
+              color: Colors.white,
+              fontWeight: FontWeight.bold, // Add this
+              ),
         ),
         actions: [
           IconButton(

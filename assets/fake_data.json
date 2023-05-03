@@ -2,6 +2,21 @@
   "moodInputs": [
     {
       "moodTime": "Morning",
+      "date": "2023-05-03T08:12:45.281",
+      "mood": 2
+    },
+    {
+      "moodTime": "Afternoon",
+      "date": "2023-05-03T13:47:21.692",
+      "mood": 3
+    },
+    {
+      "moodTime": "Evening",
+      "date": "2023-05-03T20:01:59.104",
+      "mood": 4
+    },
+    {
+      "moodTime": "Morning",
       "date": "2023-03-01T08:12:45.281",
       "mood": 2
     },
@@ -1268,6 +1283,19 @@
       }
     },
     {
+      "mealTime": "Afternoon Snack",
+      "date": "2023-05-01T15:00:00.000",
+      "label": "Mixed Nuts",
+      "measure": "Cup",
+      "weight": 28,
+      "nutrientInfo": {
+        "protein": 6.8,
+        "fat": 18.3,
+        "carbs": 4.1,
+        "energy": 3212
+      }
+    },
+    {
       "mealTime": "Breakfast",
       "date": "2023-03-20T08:00:00.000",
       "label": "Avocado Toast",
@@ -1278,6 +1306,32 @@
         "fat": 10,
         "carbs": 15,
         "energy": 200
+      }
+    },
+    {
+      "mealTime": "Breakfast",
+      "date": "2023-05-03T08:00:00.000",
+      "label": "Avocado Toast",
+      "measure": "Slice",
+      "weight": 80,
+      "nutrientInfo": {
+        "protein": 5,
+        "fat": 10,
+        "carbs": 15,
+        "energy": 200
+      }
+    },
+    {
+      "mealTime": "Lunch",
+      "date": "2023-05-03T12:30:00.000",
+      "label": "Greek Salad",
+      "measure": "Plate",
+      "weight": 350,
+      "nutrientInfo": {
+        "protein": 12,
+        "fat": 10,
+        "carbs": 20,
+        "energy": 211
       }
     },
     {
